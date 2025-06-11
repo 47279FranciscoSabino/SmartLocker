@@ -5,8 +5,7 @@ data class CreateTradeRequest(
     val senderId: Int,
     val receiverId: Int,
     val lockerId: Int,
-    val startDate: String,
-    val endDate: String
+    val startDate: String
 )
 
 data class UpdateTradeRequest(
@@ -14,7 +13,7 @@ data class UpdateTradeRequest(
     val receiverId: Int,
     val lockerId: Int,
     val startDate: String,
-    val endDate: String,
+    val endDate: String?,
     val read: Boolean,
     val status: String
 )

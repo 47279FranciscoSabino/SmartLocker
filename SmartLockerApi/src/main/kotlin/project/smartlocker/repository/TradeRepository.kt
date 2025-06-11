@@ -31,8 +31,8 @@ interface TradeRepository {
 
     @SqlUpdate(
         """
-        INSERT INTO trade (trade_sender, trade_receiver, trade_locker, trade_startdate, trade_enddate)
-        VALUES (:trade_sender, :trade_receiver, :trade_locker, :trade_startdate, :trade_enddate)
+        INSERT INTO trade (trade_sender, trade_receiver, trade_locker, trade_startdate)
+        VALUES (:trade_sender, :trade_receiver, :trade_locker, :trade_startdate)
         """
     )
     @GetGeneratedKeys
@@ -40,8 +40,7 @@ interface TradeRepository {
         @Bind("trade_sender") senderId: Int,
         @Bind("trade_receiver") receiverId: Int,
         @Bind("trade_locker") lockerId: Int,
-        @Bind("trade_startdate") startingDate: String,
-        @Bind("trade_enddate") endingDate: String
+        @Bind("trade_startdate") startingDate: String
     ):Int
 
     @SqlUpdate(
@@ -63,7 +62,7 @@ interface TradeRepository {
         @Bind("trade_receiver") receiverId: Int,
         @Bind("trade_locker") lockerId: Int,
         @Bind("trade_startdate") startingDate: String,
-        @Bind("trade_enddate") endingDate: String
+        @Bind("trade_enddate") endingDate: String?
     ):Int
 
     @SqlUpdate(

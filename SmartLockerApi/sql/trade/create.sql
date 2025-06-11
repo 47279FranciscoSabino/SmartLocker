@@ -5,7 +5,7 @@ CREATE TABLE TRADE (
     trade_receiver int NOT NULL,
     trade_locker int NOT NULL,
     trade_startdate varchar(40) NOT NULL,
-    trade_enddate varchar(40) NOT NULL,
+    trade_enddate varchar(40),
     FOREIGN KEY (trade_sender) REFERENCES USER_LOCKER(user_id) ON DELETE CASCADE,
     FOREIGN KEY (trade_receiver) REFERENCES USER_LOCKER(user_id) ON DELETE CASCADE,
     FOREIGN KEY (trade_locker) REFERENCES LOCKER(locker_id) ON DELETE CASCADE

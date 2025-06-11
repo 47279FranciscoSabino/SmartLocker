@@ -33,7 +33,7 @@ class TradeService(
 
     fun createTrade(new: CreateTradeRequest) {
         val status = TradeEnum.PENDING.toString()
-        val tradeId = tradeRepository.createTrade(new.senderId, new.receiverId, new.lockerId, new.startDate, new.endDate)
+        val tradeId = tradeRepository.createTrade(new.senderId, new.receiverId, new.lockerId, new.startDate)
         tradeRepository.createTradeStatus(tradeId, false, status)
     }
 

@@ -3,8 +3,8 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 ---Module
 CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
-    module_location GEOGRAPHY(POINT, 4326),
-    module_n int
+    module_location GEOGRAPHY(POINT, 4326) NOT NULL,
+    module_n int NOT NULL
 );
 
 ---Status

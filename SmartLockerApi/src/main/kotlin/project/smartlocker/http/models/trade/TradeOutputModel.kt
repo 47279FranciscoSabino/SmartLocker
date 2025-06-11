@@ -6,7 +6,7 @@ data class TradeDTO(
     val receiverId: Int,
     val lockerId: Int,
     val startDate: String,
-    val endDate: String,
+    val endDate: String?,
     val read: Boolean,
     val status: String
 )
