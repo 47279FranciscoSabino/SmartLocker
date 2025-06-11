@@ -8,9 +8,9 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface TradeService {
-    @GET("/trade/{id}")
+    @GET("trade/{id}")
     suspend fun getTradeById(@Path("id") id: Int): TradeDTO
 
-    @POST("/trade")
+    @POST("trade")
     suspend fun createTrade(@Body input: CreateTradeRequest)
 }

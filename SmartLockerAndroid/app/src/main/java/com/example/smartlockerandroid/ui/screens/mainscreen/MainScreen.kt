@@ -1,4 +1,4 @@
-package com.example.smartlockerandroid.ui.screens
+package com.example.smartlockerandroid.ui.screens.mainscreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,7 +21,8 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     onInfoRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null,
-    onHistoryRequest: (() -> Unit) = { },
+    onHistoryRequest: ((Int) -> Unit) = { },
+    onTradeInfoRequest: ((Int) -> Unit) = {},
     onNewRequest: () -> Unit = { }
 ){
     val tabs = listOf("New Trade", "My Trades")
@@ -57,14 +58,15 @@ fun MainScreen(
                 when (page) {
                     0 -> NewTradeScreen(onNewRequest)
                     1 -> MyTradesScreen(
-                        service = RetrofitInstance.historyService, // Replace with your actual service instance
-                        userId = 1,
-                        onClickRequest = onHistoryRequest
+                        onClickRequest = onTradeInfoRequest,
+                        onHistoryRequest = onHistoryRequest,
+                        historyService = RetrofitInstance.historyService,
+                        lockerService = RetrofitInstance.lockerService,
+                        moduleService = RetrofitInstance.moduleService,
+                        userId = 1
                     )
                 }
             }
-
-
         }
     }
 }

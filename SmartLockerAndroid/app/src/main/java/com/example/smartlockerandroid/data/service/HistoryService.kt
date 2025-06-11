@@ -9,9 +9,9 @@ interface HistoryService {
     suspend fun getUserHistory(@Path("id") id: Int): List<TradeDTO>
 
     @GET("receiver/{id}")
-    suspend fun getBySender(@Path("id") id: Int): List<TradeDTO>
+    suspend fun getByReceiver(@Path("id") id: Int): List<TradeDTO>
 
     @GET("sender/{id}")
-    suspend fun getByReceiver(@Path("id") id: Int): List<TradeDTO>
+    suspend fun getBySender(@Path("id") id: Int): List<TradeDTO>
 }
 

@@ -37,6 +37,6 @@ fun LogInButton(onClick: () -> Unit){
 @Composable
 fun LogInButtonPreview() {
     LogInButton(
-        onClick = { /* Do nothing for preview */ },
+        onClick = { },
     )
 }

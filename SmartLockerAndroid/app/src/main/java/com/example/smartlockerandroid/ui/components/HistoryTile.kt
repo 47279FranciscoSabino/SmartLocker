@@ -24,58 +24,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.smartlockerandroid.ui.theme.MyBlue
 
 @Composable
-fun TradeTile(receive: Boolean = false, location: String, date :String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if(receive){
+fun HistoryTile(location: String, date :String, onClick: () -> Unit) {
+    Box(modifier = Modifier.background(MyBlue)){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f).height(50.dp), verticalArrangement = Arrangement.Center) {
+                Text(text = location, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp, color = Color.White)
+                Text(text = date, fontWeight = FontWeight(10), color = Color.LightGray )
+            }
+
             Icon(
-                imageVector = Icons.Default.Lock,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = Color.LightGray,
-                modifier = Modifier.size(24.dp)
+                tint = Color.Gray
             )
         }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column(modifier = Modifier.weight(1f).height(50.dp), verticalArrangement = Arrangement.Center) {
-            Text(text = location, fontWeight = FontWeight.ExtraBold, color = Color.White)
-            Text(text = date, fontWeight = FontWeight(10), color = Color.LightGray )
-        }
-
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
-            contentDescription = null,
-            tint = Color.Gray
-        )
     }
+    Spacer(modifier = Modifier.height(1.dp))
 }
 
 @Preview
 @Composable
 private fun ReceiverTilePreview() {
-    TradeTile(
-        receive = true,
+    HistoryTile(
         location = "chelas",
         date = "10-02-2022",
-        onClick = { }
-    )
-}
-
-@Preview
-@Composable
-private fun SenderTilePreview() {
-    TradeTile(
-        location = "isel",
-        date = "19-05-2025",
         onClick = { }
     )
 }

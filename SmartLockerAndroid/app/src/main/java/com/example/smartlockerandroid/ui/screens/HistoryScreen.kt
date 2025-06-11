@@ -1,11 +1,9 @@
 package com.example.smartlockerandroid.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,8 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.data.service.HistoryService
+import com.example.smartlockerandroid.data.service.LockerService
+import com.example.smartlockerandroid.data.service.ModuleService
+import com.example.smartlockerandroid.ui.components.HistoryTile
 import com.example.smartlockerandroid.ui.components.TopBar
-import com.example.smartlockerandroid.ui.theme.MyBlue
 import com.example.smartlockerandroid.utils.viewModelInit
 import com.example.smartlockerandroid.viewmodel.HistoryViewModel
 
@@ -27,13 +27,18 @@ fun HistoryScreen(
     onInfoRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null,
     onBackRequest: (() -> Unit)? = null,
-    service: HistoryService,
+    onClickRequest: (Int) -> Unit = {},
+    historyService: HistoryService,
+    lockerService: LockerService,
+    moduleService: ModuleService,
     userId: Int,
 ){
     val viewModel: HistoryViewModel = viewModel(
-        factory = viewModelInit { HistoryViewModel(service, userId) }
+        factory = viewModelInit { HistoryViewModel(historyService, lockerService, moduleService, userId) }
     )
     val pastTrades = viewModel.pastTrades
+    val locker = viewModel.tradesInfo
+    val module = viewModel.module
     val loading = viewModel.isLoading
     val error = viewModel.errorMessage
 
@@ -59,11 +64,15 @@ fun HistoryScreen(
                     Text("Error: $error")
                 }
                 else -> {
-                    if (pastTrades.size > 0) {
-                        Box(modifier = Modifier.padding(10.dp)) {
+                    if (pastTrades.isNotEmpty()) {
+                        Box(modifier = Modifier.padding(1.dp)) {
                             Column {
-                                pastTrades.forEach {
-                                    Box(modifier = Modifier.background(MyBlue).size(50.dp))
+                                pastTrades.forEach { trade ->
+                                    HistoryTile(
+                                        location =  module.find { it.id == locker.find { it.id == trade.lockerId }?.module}?.locName.toString(),
+                                        date = trade.startDate,
+                                        onClick = {onClickRequest(trade.id)}
+                                    )
                                 }
                             }
                         }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.ui.components.LogInButton
 import com.example.smartlockerandroid.ui.components.TopBar
-import com.example.smartlockerandroid.ui.theme.BlueL
+import com.example.smartlockerandroid.ui.theme.MyBlue2
 
 @Composable
 fun HomePageScreen(
@@ -39,7 +39,7 @@ fun HomePageScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center, // centers vertically
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize().padding(it)
         ) {
             Box(
@@ -50,7 +50,7 @@ fun HomePageScreen(
                     fontStyle = FontStyle.Italic,
                     fontSize = 55.sp,
                     fontWeight = FontWeight.Bold,
-                    color = BlueL
+                    color = MyBlue2
                 )
             }
             Spacer(modifier = Modifier.height(80.dp))

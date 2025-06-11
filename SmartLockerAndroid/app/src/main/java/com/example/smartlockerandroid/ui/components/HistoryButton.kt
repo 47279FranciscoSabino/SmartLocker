@@ -35,6 +35,6 @@ fun HistoryButton(onClick: () -> Unit){
 @Composable
 fun HistoryButtonPreview() {
     HistoryButton(
-        onClick = { /* Do nothing for preview */ },
+        onClick = { },
     )
 }

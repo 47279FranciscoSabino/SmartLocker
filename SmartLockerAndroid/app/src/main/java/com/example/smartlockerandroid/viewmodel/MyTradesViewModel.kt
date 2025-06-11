@@ -5,20 +5,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartlockerandroid.data.model.locker.LockerDTO
+import com.example.smartlockerandroid.data.model.module.ModuleDTO
 import com.example.smartlockerandroid.data.model.trade.TradeDTO
 import com.example.smartlockerandroid.data.service.HistoryService
+import com.example.smartlockerandroid.data.service.LockerService
+import com.example.smartlockerandroid.data.service.ModuleService
 import kotlinx.coroutines.launch
 
 class MyTradesViewModel(
-    private val service: HistoryService,
-    private val userId: Int // Provide this from auth/session
+    private val historyService: HistoryService,
+    private val lockerService: LockerService,
+    private val moduleService: ModuleService,
+    private val userId: Int
 ) : ViewModel() {
 
-    var waitingTrades by mutableStateOf<List<TradeDTO>>(emptyList())
+
+    var tradesToWithdraw by mutableStateOf<List<TradeDTO>>(emptyList())
+        private set
+    var receiverLocker by mutableStateOf<List<LockerDTO>>(emptyList())
+        private set
+    var receiverLockerModule by mutableStateOf<List<ModuleDTO>>(emptyList())
         private set
 
-    var myPendingTrades by mutableStateOf<List<TradeDTO>>(emptyList())
+
+    var tradesPending by mutableStateOf<List<TradeDTO>>(emptyList())
         private set
+    var senderLocker by mutableStateOf<List<LockerDTO>>(emptyList())
+        private set
+    var senderLockerModule by mutableStateOf<List<ModuleDTO>>(emptyList())
+        private set
+
 
     var isLoading by mutableStateOf(true)
         private set
@@ -27,24 +44,44 @@ class MyTradesViewModel(
         private set
 
     init {
-        loadTrades()
+        loadReceive()
+        loadSend()
     }
 
-    fun loadTrades() {
+    fun loadReceive(){
         viewModelScope.launch {
             try {
                 isLoading = true
                 errorMessage = null
 
-                val received = service.getBySender(userId) // Trades where I'm the receiver
-                val created = service.getByReceiver(userId) // Trades I created
+                val received = historyService.getByReceiver(userId) // Trades where I'm the receiver
 
-                // Filter out ended trades (you can adjust based on your data model)
-                waitingTrades = received.filter { it.status == "PENDING" }
-                myPendingTrades = created.filter { it.status == "PENDING" }
+                tradesToWithdraw = received.filter { it.status == "PENDING" }
+                receiverLocker= tradesToWithdraw.map { lockerService.getLockerById(it.lockerId) }
+                receiverLockerModule = receiverLocker.map { moduleService.getModule(it.module) }
 
             } catch (e: Exception) {
-                errorMessage = e.message ?: "Unknown error"
+                errorMessage = e.message ?: "Error on receive trades request"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun loadSend(){
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                errorMessage = null
+
+                val sent = historyService.getBySender(userId) // Trades I created
+
+                tradesPending = sent.filter { it.status == "PENDING" }
+                senderLocker = tradesPending.map { lockerService.getLockerById(it.lockerId) }
+                senderLockerModule = senderLocker.map { moduleService.getModule(it.module) }
+
+            } catch (e: Exception) {
+                errorMessage = e.message ?: "Error on send trades request"
             } finally {
                 isLoading = false
             }

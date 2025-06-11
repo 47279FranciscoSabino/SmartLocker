@@ -1,4 +1,4 @@
-package com.example.smartlockerandroid.ui.screens
+package com.example.smartlockerandroid.ui.screens.mainscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,7 @@ fun NewTradeScreen(
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center, // centers vertically
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         Spacer(modifier = Modifier.height(80.dp))

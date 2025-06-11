@@ -35,6 +35,6 @@ fun NewTradeButton(onClick: () -> Unit){
 @Composable
 fun NewLockerButtonPreview() {
     NewTradeButton(
-        onClick = { /* Do nothing for preview */ },
+        onClick = { },
     )
 }

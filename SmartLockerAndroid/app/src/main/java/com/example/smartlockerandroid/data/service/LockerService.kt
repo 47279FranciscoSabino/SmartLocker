@@ -8,6 +8,6 @@ interface LockerService {
     @GET("lockers")
     suspend fun getAllLockers(): List<LockerDTO>
 
-    @GET("lockers/{id}")
+    @GET("locker/{id}")
     suspend fun getLockerById(@Path("id") id: Int): LockerDTO
 }
