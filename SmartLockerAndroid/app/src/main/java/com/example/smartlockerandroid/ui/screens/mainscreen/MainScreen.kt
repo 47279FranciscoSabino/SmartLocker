@@ -56,7 +56,10 @@ fun MainScreen(
             }
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
-                    0 -> NewTradeScreen(onNewRequest)
+                    0 -> NewTradeScreen(
+                        onClickRequest = onNewRequest,
+                        moduleService = RetrofitInstance.moduleService,
+                    )
                     1 -> MyTradesScreen(
                         onClickRequest = onTradeInfoRequest,
                         onHistoryRequest = onHistoryRequest,

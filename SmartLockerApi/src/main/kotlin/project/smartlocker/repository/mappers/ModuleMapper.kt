@@ -9,6 +9,7 @@ import project.smartlocker.domain.module.ModuleEnum
 import project.smartlocker.domain.module.ModuleStatus
 import java.sql.ResultSet
 import org.postgis.Point
+import project.smartlocker.http.models.module.ModuleAppDTO
 
 class ModuleMapper(): RowMapper<Module> {
     //@Throws(SQLException::class)
@@ -32,6 +33,24 @@ class ModuleStatusMapper(): RowMapper<ModuleStatus> {
             rs.getInt("module"),
             rs.getString("module_location_name"),
             ModuleEnum.valueOf(rs.getString("module_status"))
+        )
+    }
+}
+
+class ModuleAppMapper(): RowMapper<ModuleAppDTO> {
+    //@Throws(SQLException::class)
+    override fun map(rs: ResultSet, ctx: StatementContext?): ModuleAppDTO {
+        val geo = rs.getObject("module_location") as PGgeography
+        val point = geo.geometry as Point
+        val location = Location(point.y, point.x) // latitude, longitude
+
+        return ModuleAppDTO(
+            rs.getInt("module_id"),
+            location,
+            rs.getInt("module_n"),
+            rs.getString("module_location_name"),
+            rs.getString("module_status"),
+            rs.getInt("available_lockers")
         )
     }
 }

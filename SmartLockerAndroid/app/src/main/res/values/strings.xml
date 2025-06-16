@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">SmartLocker</string>
+    <string name="login_button">Login/Sign up</string>
+
+    <string name="new_trade">New Trade</string>
+    <string name="new_button">New</string>
+
+    <string name="my_trades">My Trades</string>
+    <string name="pick_up">To Pick Up</string>
+    <string name="drop">Dropped</string>
+    <string name="no_trades">No trades to withdraw</string>
+
+    <string name="history_button">Past trades</string>
+    <string name="no_history">Your history is clear </string>
+
+    <string name="From">From: </string>
+    <string name="To">To: </string>
+    <string name="Stãrted">Started: </string>
+    <string name="Ended">Ended: </string>
+
 </resources>

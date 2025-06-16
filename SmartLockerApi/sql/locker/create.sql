@@ -10,7 +10,7 @@ CREATE TABLE LOCKER (
 ---Status
 CREATE TABLE LOCKER_STATUS(
     locker int,
-    status varchar(50),
+    locker_status varchar(50),
     PRIMARY KEY (locker),
     FOREIGN KEY (locker) REFERENCES LOCKER (locker_id)
 

@@ -68,7 +68,8 @@ fun Nav(
 
         composable("new_trade"){
             NewTradeScreen(
-                onClickLogIn =  { activity?.finish() }
+                onClickRequest = { activity?.finish() },
+                moduleService = RetrofitInstance.moduleService,
             )
         }
 

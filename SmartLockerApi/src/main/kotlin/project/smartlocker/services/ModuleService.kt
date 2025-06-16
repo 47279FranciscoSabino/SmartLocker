@@ -3,6 +3,7 @@ package project.smartlocker.services
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.module.ModuleEnum
 import project.smartlocker.http.models.module.CreateModuleRequest
+import project.smartlocker.http.models.module.ModuleAppDTO
 import project.smartlocker.http.models.module.ModuleDTO
 import project.smartlocker.http.models.module.UpdateModuleRequest
 import project.smartlocker.repository.ModuleRepository
@@ -48,7 +49,7 @@ class ModuleService(
         val moduleId = moduleRepository.deleteModuleStatus(id)
         moduleRepository.deleteModule(moduleId)
     }
-
+    /*
     fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{
         val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
         val outputs = modules.map {
@@ -56,5 +57,18 @@ class ModuleService(
             ModuleDTO(it.id, it.location, it.maxN, status!!.locName, status.status.toString())
         }
         return outputs
+    }
+
+     */
+
+    fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleAppDTO>{
+        val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
+        /*
+        val outputs = modules.map {
+            ModuleDTO(it.id, it.location, it.maxN, status!!.locName, status.status.toString())
+        }
+
+         */
+        return modules
     }
 }

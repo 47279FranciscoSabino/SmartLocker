@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import project.smartlocker.http.models.module.CreateModuleRequest
+import project.smartlocker.http.models.module.ModuleAppDTO
 import project.smartlocker.http.models.module.ModuleDTO
 import project.smartlocker.http.models.module.UpdateModuleRequest
 import project.smartlocker.http.models.user.UserDTO
@@ -45,9 +46,18 @@ class ModuleController(
         return ResponseEntity.noContent().build()
     }
 
+    /*
     @GetMapping(Uris.Module.GET_MODULE_GEO)
     fun getModulesByRadius(@PathVariable latitude: Double, @PathVariable longitude: Double, @RequestParam radius: Double): ResponseEntity<List<ModuleDTO>> {
         val modules = moduleService.getModulesByRadius(latitude, longitude, radius)
         return ResponseEntity.ok(modules)
     }
+     */
+
+    @GetMapping(Uris.Module.GET_MODULE_GEO)
+    fun getModulesByRadius(@PathVariable latitude: Double, @PathVariable longitude: Double, @RequestParam radius: Double): ResponseEntity<List<ModuleAppDTO>> {
+        val modules = moduleService.getModulesByRadius(latitude, longitude, radius)
+        return ResponseEntity.ok(modules)
+    }
+
 }

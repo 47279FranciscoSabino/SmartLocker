@@ -7,12 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import androidx.preference.PreferenceManager
 import com.example.smartlockerandroid.ui.theme.SmartLockerAndroidTheme
+import org.osmdroid.config.Configuration
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
+
+        super.onCreate(
+            savedInstanceState
+        )
         enableEdgeToEdge()
         setContent {
             SmartLockerAndroidTheme {

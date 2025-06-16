@@ -52,6 +52,7 @@ class DatabaseConfiguration {
     fun moduleRepository(jdbi: Jdbi): ModuleRepository {
         jdbi.registerRowMapper(ModuleMapper())
         jdbi.registerRowMapper(ModuleStatusMapper())
+        jdbi.registerRowMapper(ModuleAppMapper())
         return jdbi.onDemand(ModuleRepository::class.java)
     }
 

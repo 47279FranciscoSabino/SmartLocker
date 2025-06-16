@@ -8,36 +8,78 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.data.service.ModuleService
+import com.example.smartlockerandroid.ui.components.MapBox
 import com.example.smartlockerandroid.ui.components.NewTradeButton
-import com.example.smartlockerandroid.ui.theme.MyBlue
+import com.example.smartlockerandroid.utils.viewModelInit
+import com.example.smartlockerandroid.viewmodel.NewTradeViewModel
+import org.osmdroid.util.GeoPoint
 
 @Composable
 fun NewTradeScreen(
-    onClickLogIn: () -> Unit = { }
-){
+    onClickRequest: () -> Unit = { },
+    moduleService: ModuleService,
+
+    ){
+
+    // get geo location
+    // hardcoded -> 38.765970151954996, -9.118521289095881 -- (vale do silencio)
+
+    val center = GeoPoint(38.765970151954996, -9.118521289095881)
+
+    val newTradeViewModel: NewTradeViewModel = viewModel(
+        factory = viewModelInit { NewTradeViewModel(moduleService, center) }
+    )
+
+    val modules = newTradeViewModel.modules
+
+    val loading = newTradeViewModel.isLoading
+    val error = newTradeViewModel.errorMessage
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(80.dp))
-        Box(modifier = Modifier.background(MyBlue).size(350.dp)) {
+        when {
+            loading -> {
+                CircularProgressIndicator(
+                    color = Color.Transparent
+                )
+            }
 
-        }
-        Spacer(modifier = Modifier.height(80.dp))
-        Box {
-            NewTradeButton { onClickLogIn() }
+            error != null -> {
+                Text("Error: $error")
+            }
+
+            else -> {
+                Spacer(modifier = Modifier.height(80.dp))
+                Box(
+                    modifier = Modifier
+                        .size(350.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                ) {
+                    MapBox(
+                        modules,
+                        center
+                    )
+                }
+                Spacer(modifier = Modifier.height(80.dp))
+                Box {
+                    NewTradeButton { onClickRequest() }
+                }
+            }
         }
     }
 }
 
-@Preview(showBackground  = true)
-@Composable
-fun NewLockerPreview() {
-    NewTradeScreen()
-}
