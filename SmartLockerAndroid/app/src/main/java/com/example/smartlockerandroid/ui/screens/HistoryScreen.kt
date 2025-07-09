@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService
-import com.example.smartlockerandroid.ui.components.HistoryTile
+import com.example.smartlockerandroid.ui.components.history.HistoryTile
 import com.example.smartlockerandroid.ui.components.TopBar
 import com.example.smartlockerandroid.utils.viewModelInit
 import com.example.smartlockerandroid.viewmodel.HistoryViewModel

@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartlockerandroid.data.model.locker.LockerDTO
-import com.example.smartlockerandroid.data.model.module.ModuleDTO
-import com.example.smartlockerandroid.data.model.trade.TradeDTO
+import com.example.smartlockerandroid.data.model.locker.output.LockerDTO
+import com.example.smartlockerandroid.data.model.module.output.ModuleDTO
+import com.example.smartlockerandroid.data.model.trade.output.TradeDTO
 import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService

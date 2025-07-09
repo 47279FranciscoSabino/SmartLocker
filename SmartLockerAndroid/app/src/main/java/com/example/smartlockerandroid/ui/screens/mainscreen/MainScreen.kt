@@ -23,7 +23,8 @@ fun MainScreen(
     onProfileRequest: (() -> Unit)? = null,
     onHistoryRequest: ((Int) -> Unit) = { },
     onTradeInfoRequest: ((Int) -> Unit) = {},
-    onNewRequest: () -> Unit = { }
+    onNewRequest: () -> Unit = { },
+    userId: Int
 ){
     val tabs = listOf("New Trade", "My Trades")
     val pagerState = rememberPagerState(
@@ -66,16 +67,10 @@ fun MainScreen(
                         historyService = RetrofitInstance.historyService,
                         lockerService = RetrofitInstance.lockerService,
                         moduleService = RetrofitInstance.moduleService,
-                        userId = 1
+                        userId = userId
                     )
                 }
             }
         }
     }
-}
-
-@Preview(showBackground  = true)
-@Composable
-fun MainPreview() {
-    MainScreen()
 }

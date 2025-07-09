@@ -1,6 +1,8 @@
 package com.example.smartlockerandroid.ui.screens.mainscreen
 
-import androidx.compose.foundation.background
+import android.Manifest
+import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,37 +14,84 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.data.service.ModuleService
-import com.example.smartlockerandroid.ui.components.MapBox
-import com.example.smartlockerandroid.ui.components.NewTradeButton
+import com.example.smartlockerandroid.ui.components.main.MapBox
+import com.example.smartlockerandroid.ui.components.main.NewTradeButton
 import com.example.smartlockerandroid.utils.viewModelInit
 import com.example.smartlockerandroid.viewmodel.NewTradeViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import org.osmdroid.util.GeoPoint
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun NewTradeScreen(
     onClickRequest: () -> Unit = { },
     moduleService: ModuleService,
-
-    ){
-
-    // get geo location
-    // hardcoded -> 38.765970151954996, -9.118521289095881 -- (vale do silencio)
-
-    val center = GeoPoint(38.765970151954996, -9.118521289095881)
-
-    val newTradeViewModel: NewTradeViewModel = viewModel(
-        factory = viewModelInit { NewTradeViewModel(moduleService, center) }
+) {
+    val context = LocalContext.current
+    val permissionsState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
     )
 
-    val modules = newTradeViewModel.modules
+    val location = remember { mutableStateOf<GeoPoint?>(null) }
+    val client = remember { LocationServices.getFusedLocationProviderClient(context) }
 
+    // Request permissions when screen launches
+    LaunchedEffect(Unit) {
+        permissionsState.launchMultiplePermissionRequest()
+    }
+
+    // Only proceed when at least one permission is granted
+    LaunchedEffect(permissionsState.permissions) {
+        if (permissionsState.permissions.any { it.status.isGranted }) {
+            val request = CurrentLocationRequest.Builder()
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .setDurationMillis(5000)
+                .build()
+
+            client.getCurrentLocation(request, null)
+                .addOnSuccessListener { loc ->
+                    Log.i("NewTradeScreen", "Current location: $loc")
+                    loc?.let {
+                        location.value = GeoPoint(it.latitude, it.longitude)
+                        Log.i("NewTradeScreen", location.value.toString())
+                    }
+                }
+                .addOnFailureListener {
+                    Log.e("NewTradeScreen", "Failed to get current location", it)
+                }
+        }
+    }
+
+    val center = GeoPoint(0.0, 0.0)
+
+    val newTradeViewModel: NewTradeViewModel = viewModel(
+        factory = viewModelInit { NewTradeViewModel(moduleService) }
+    )
+
+    LaunchedEffect(location.value) {
+        location.value?.let {
+            newTradeViewModel.updateLocation(it)
+        }
+    }
+
+    val modules = newTradeViewModel.modules
     val loading = newTradeViewModel.isLoading
     val error = newTradeViewModel.errorMessage
 
@@ -53,15 +102,11 @@ fun NewTradeScreen(
     ) {
         when {
             loading -> {
-                CircularProgressIndicator(
-                    color = Color.Transparent
-                )
+                CircularProgressIndicator()
             }
-
             error != null -> {
                 Text("Error: $error")
             }
-
             else -> {
                 Spacer(modifier = Modifier.height(80.dp))
                 Box(
@@ -71,7 +116,7 @@ fun NewTradeScreen(
                 ) {
                     MapBox(
                         modules,
-                        center
+                        location.value ?: center
                     )
                 }
                 Spacer(modifier = Modifier.height(80.dp))
@@ -82,4 +127,3 @@ fun NewTradeScreen(
         }
     }
 }
-

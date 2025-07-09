@@ -13,15 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService
 import com.example.smartlockerandroid.data.service.TradeService
 import com.example.smartlockerandroid.data.service.UserService
 import com.example.smartlockerandroid.ui.components.TopBar
-import com.example.smartlockerandroid.ui.components.TradeCard
+import com.example.smartlockerandroid.ui.components.trade.TradeCard
 import com.example.smartlockerandroid.utils.viewModelInit
-import com.example.smartlockerandroid.viewmodel.MyTradesViewModel
 import com.example.smartlockerandroid.viewmodel.TradeViewModel
 
 @Composable

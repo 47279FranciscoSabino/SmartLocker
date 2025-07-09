@@ -1,6 +1,6 @@
 package com.example.smartlockerandroid.data.service
 
-import com.example.smartlockerandroid.data.model.module.ModuleDTO
+import com.example.smartlockerandroid.data.model.module.output.ModuleDTO
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

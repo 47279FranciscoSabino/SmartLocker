@@ -1,5 +1,6 @@
 package com.example.smartlockerandroid.data.model.module
 
+/*
 data class CreateModuleRequest(
     val latitude: Double,
     val longitude: Double,
@@ -14,3 +15,6 @@ data class UpdateModuleRequest(
     val locName: String,
     val status: String
 )
+
+
+ */

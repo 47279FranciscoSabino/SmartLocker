@@ -24,8 +24,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService
-import com.example.smartlockerandroid.ui.components.HistoryButton
-import com.example.smartlockerandroid.ui.components.TradeTile
+import com.example.smartlockerandroid.ui.components.history.HistoryButton
+import com.example.smartlockerandroid.ui.components.trade.TradeTile
 import com.example.smartlockerandroid.ui.theme.MyBlue
 import com.example.smartlockerandroid.ui.theme.MyBlue2
 import com.example.smartlockerandroid.utils.viewModelInit
