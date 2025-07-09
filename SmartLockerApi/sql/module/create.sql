@@ -4,14 +4,14 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
     module_location GEOGRAPHY(POINT, 4326) NOT NULL,
+    module_location_name varchar(255),
     module_n int NOT NULL
 );
 
----Status
+---Status   -- AVAILABLE, UNAVAILABLE, MAINTENANCE
 CREATE TABLE MODULE_STATUS(
-    module int PRIMARY KEY REFERENCES MODULE(module_id),
-    module_status varchar(50),
-    module_location_name varchar(255)
+    module int PRIMARY KEY REFERENCES MODULE(module_id) ON DELETE CASCADE,
+    module_status varchar(50)
 );
 
 SELECT * FROM information_schema.tables WHERE table_name ILIKE 'module';
