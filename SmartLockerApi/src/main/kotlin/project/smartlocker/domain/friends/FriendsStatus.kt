@@ -7,5 +7,5 @@ data class FriendsStatus(
 )
 
 enum class FriendsEnum {
-    PENDING, ACCEPTED, BLOCKED, DENIED
+    PENDING, ACCEPTED, BLOCKED
 }

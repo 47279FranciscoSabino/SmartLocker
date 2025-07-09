@@ -1,48 +1,59 @@
 package project.smartlocker.services
 
 import org.springframework.stereotype.Service
-import project.smartlocker.domain.locker.LockerEnum
 import project.smartlocker.domain.locker.LockerStatus
-import project.smartlocker.http.models.locker.CreateLockerRequest
-import project.smartlocker.http.models.locker.LockerDTO
-import project.smartlocker.http.models.locker.UpdateLockerRequest
+import project.smartlocker.http.models.hash.input.CreateHashRequest
+import project.smartlocker.http.models.locker.input.CreateLockerRequest
+import project.smartlocker.http.models.locker.input.UpdateLockerRequest
+import project.smartlocker.http.models.locker.output.LockerDTO
+import project.smartlocker.repository.HashRepository
 import project.smartlocker.repository.LockerRepository
+import java.util.*
 
 @Service
 class LockerService(
-    private val lockerRepository: LockerRepository
+    private val lockerRepository: LockerRepository,
+    private val hashService: HashService
 ) {
+    // admin
     fun getAllLockers(): List<LockerDTO> {
-        val lockers = lockerRepository.getAllLockers()
-        val outputs = lockers.map {
-            val status = lockerRepository.getLockerStatus(it.id)
-            LockerDTO(it.id, it.module, it.qr, it.active, status.status.toString())
-        }
-        return outputs
+        return lockerRepository.getAllLockers()
+    }
+
+    fun getAllLockersStatus(): List<LockerStatus> {
+        return lockerRepository.getLockerStatus()
     }
 
     fun getLockerById(id: Int): LockerDTO? {
-        val locker = lockerRepository.getLockerById(id)
-        locker?.let {
-            val status = lockerRepository.getLockerStatus(it.id)
-            return LockerDTO(it.id, it.module, it.qr, it.active, status.status.toString())
-        }
-        return null
+        return lockerRepository.getLockerById(id)
+    }
+
+    fun getLockerByHash(hash: String): LockerDTO? {
+        return lockerRepository.getLockerByHash(hash)
     }
 
     fun createLocker(new: CreateLockerRequest){
-        val lockerId = lockerRepository.createLocker(new.module, new.qr, new.active)
-        val status = LockerEnum.AVAILABLE.toString()
-        lockerRepository.createLockerStatus(lockerId, status)
+        val hash = UUID.randomUUID().toString().replace("-", "")
+        lockerRepository.createLocker(new.module, hash, new.active)
+        val input = CreateHashRequest(hash)
+        hashService.createQrCode(input)
     }
 
-    fun updateLocker(id: Int, locker: UpdateLockerRequest) {
-        val lockerId = lockerRepository.updateLocker(id, locker.module, locker.qr, locker.active)
-        lockerRepository.updateLockerStatus(lockerId, locker.status)
+    fun updateLocker(id: Int, input: UpdateLockerRequest) {
+        val locker = lockerRepository.getLockerById(id)?: throw Exception("User not found")
+
+        val module = input.module ?: locker.module
+        val hash = input.hash ?: locker.hash
+        val active = input.active ?: locker.active
+        val status = input.status ?: locker.status
+
+        val lockerId = lockerRepository.updateLocker(id, module, hash, active)
+        lockerRepository.updateLockerStatus(lockerId, status)
     }
 
     fun deleteLocker(id: Int) {
-        val lockerId = lockerRepository.deleteLockerStatus(id)
-        lockerRepository.deleteLocker(lockerId)
+        lockerRepository.deleteLocker(id)
     }
+
+    // global
 }

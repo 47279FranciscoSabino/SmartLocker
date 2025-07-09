@@ -5,65 +5,31 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.springframework.stereotype.Repository
-import project.smartlocker.domain.module.ModuleStatus
-import project.smartlocker.domain.trade.Trade
 import project.smartlocker.domain.trade.TradeStatus
-import project.smartlocker.http.models.trade.TradeDTO
+import project.smartlocker.http.models.trade.output.TradeDTO
 
 
 @Repository
 interface TradeRepository {
+    // admin
     @SqlQuery(
         """
-        SELECT * FROM trade
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t 
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
         """
     )
-    fun getAllTrades(): List<Trade>
+    fun getAllTrades(): List<TradeDTO>
 
     @SqlQuery(
         """
-        SELECT * FROM trade WHERE trade_id = :trade_id
+        SELECT * FROM trade_status
         """
     )
-    fun getTradeById(
-        @Bind("trade_id") id: Int
-    ): Trade?
-
-    @SqlUpdate(
-        """
-        INSERT INTO trade (trade_sender, trade_receiver, trade_locker, trade_startdate)
-        VALUES (:trade_sender, :trade_receiver, :trade_locker, :trade_startdate)
-        """
-    )
-    @GetGeneratedKeys
-    fun createTrade(
-        @Bind("trade_sender") senderId: Int,
-        @Bind("trade_receiver") receiverId: Int,
-        @Bind("trade_locker") lockerId: Int,
-        @Bind("trade_startdate") startingDate: String
-    ):Int
-
-    @SqlUpdate(
-        """
-        UPDATE trade 
-        SET trade_sender = :trade_sender, 
-            trade_receiver = :trade_receiver,
-            trade_locker = :trade_locker,
-            trade_startdate = :trade_startdate,
-            trade_enddate = :trade_enddate
-        WHERE trade_id = :trade_id
-    
-        """
-    )
-    @GetGeneratedKeys
-    fun updateTrade(
-        @Bind("trade_id") id: Int,
-        @Bind("trade_sender") senderId: Int,
-        @Bind("trade_receiver") receiverId: Int,
-        @Bind("trade_locker") lockerId: Int,
-        @Bind("trade_startdate") startingDate: String,
-        @Bind("trade_enddate") endingDate: String?
-    ):Int
+    fun getAllTradesStatus(): List<TradeStatus>
 
     @SqlUpdate(
         """
@@ -74,27 +40,63 @@ interface TradeRepository {
         @Bind("trade_id") id: Int
     )
 
-    // Status
+    // global
     @SqlQuery(
         """
-        SELECT * FROM trade_status WHERE trade = :trade
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t 
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id 
+        WHERE trade_id = :trade_id
         """
     )
-    fun getTradeStatus(
-        @Bind("trade") trade: Int
-    ): TradeStatus?
+    fun getTradeById(
+        @Bind("trade_id") id: Int
+    ): TradeDTO?
+
+    @SqlQuery(
+        """
+        SELECT 
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t 
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        WHERE trade_locker = :trade_locker AND trade_status = 'PENDING'
+        """
+    )
+    fun getPendingTrade(
+        @Bind("trade_locker") locker: Int
+    ): TradeDTO?
 
     @SqlUpdate(
         """
-        INSERT INTO trade_status (trade, trade_status, trade_read)
-        VALUES (:trade, :trade_status, :trade_read)
+        INSERT INTO trade (trade_sender, trade_receiver, trade_locker, trade_startdate)
+        VALUES (:trade_sender, :trade_receiver, :trade_locker, CURRENT_DATE)
         """
     )
-    fun createTradeStatus(
-        @Bind("trade") trade: Int,
-        @Bind("trade_read") read: Boolean,
-        @Bind("trade_status") status: String
+    @GetGeneratedKeys
+    fun createTrade(
+        @Bind("trade_sender") senderId: Int,
+        @Bind("trade_receiver") receiverId: Int,
+        @Bind("trade_locker") lockerId: Int
+    ):Int
+
+    @SqlUpdate(
+        """
+        UPDATE trade 
+        SET trade_receiver = :trade_receiver
+        WHERE trade_id = :trade_id
+    
+        """
     )
+    @GetGeneratedKeys
+    fun updateTrade(
+        @Bind("trade_id") id: Int,
+        @Bind("trade_receiver") receiverId: Int,
+    ):Int
 
     @SqlUpdate(
         """
@@ -110,55 +112,66 @@ interface TradeRepository {
         @Bind("trade_status") status: String
     )
 
-    @SqlUpdate(
-        """
-        DELETE FROM trade_status WHERE trade = :trade
-        """
-    )
-    @GetGeneratedKeys
-    fun deleteTradeStatus(
-        @Bind("trade") trade: Int
-    ):Int
-
-
-
 
 
     @SqlQuery(
         """
-        SELECT * FROM trade WHERE trade_locker = :trade_locker
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        WHERE trade_locker = :trade_locker
         """
     )
     fun getTradesByLocker(
         @Bind ("trade_locker")locker: Int
-    ): List<Trade>
+    ): List<TradeDTO>
 
     @SqlQuery(
         """
-        SELECT * FROM trade WHERE trade_receiver = :trade_receiver
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        WHERE trade_receiver = :trade_receiver
         """
     )
     fun getTradesByReceiver(
         @Bind ("trade_receiver") receiver: Int
-    ): List<Trade>
+    ): List<TradeDTO>
 
     @SqlQuery(
         """
-        SELECT * FROM trade WHERE trade_sender = :trade_sender
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        WHERE trade_sender = :trade_sender
         """
     )
     fun getTradesBySender(
         @Bind("trade_sender") sender: Int
-    ): List<Trade>
+    ): List<TradeDTO>
 
     @SqlQuery(
         """
-        SELECT * FROM trade WHERE trade_sender = :user OR trade_receiver = :user
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status
+        FROM trade t
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        WHERE trade_sender = :user OR trade_receiver = :user
         """
     )
     fun getUserTrades(
         @Bind("user") user: Int
-    ): List<Trade>
+    ): List<TradeDTO>
 
 }
-// 1 history a receber dos 2 sender or receiver

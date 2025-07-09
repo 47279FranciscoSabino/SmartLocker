@@ -6,6 +6,7 @@ import project.smartlocker.domain.locker.LockerEnum
 import project.smartlocker.domain.trade.Trade
 import project.smartlocker.domain.trade.TradeEnum
 import project.smartlocker.domain.trade.TradeStatus
+import project.smartlocker.http.models.trade.output.TradeDTO
 import java.sql.ResultSet
 
 class TradeMapper(): RowMapper<Trade> {
@@ -29,6 +30,22 @@ class TradeStatusMapper(): RowMapper<TradeStatus> {
             rs.getInt("trade"),
             rs.getBoolean("trade_read"),
             TradeEnum.valueOf(rs.getString("trade_status"))
+        )
+    }
+}
+
+class TradeDTOMapper(): RowMapper<TradeDTO> {
+    //@Throws(SQLException::class)
+    override fun map(rs: ResultSet, ctx: StatementContext?): TradeDTO {
+        return TradeDTO(
+            rs.getInt("trade_id"),
+            rs.getInt("trade_sender"),
+            rs.getInt("trade_receiver"),
+            rs.getInt("trade_locker"),
+            rs.getString("trade_startdate"),
+            rs.getString("trade_enddate"),
+            rs.getBoolean( "trade_read"),
+            rs.getString("trade_status")
         )
     }
 }

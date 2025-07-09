@@ -44,6 +44,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	implementation("net.postgis:postgis-jdbc:2.5.0")
+
+	implementation("com.google.zxing:core:3.5.3")
 }
 
 kotlin {

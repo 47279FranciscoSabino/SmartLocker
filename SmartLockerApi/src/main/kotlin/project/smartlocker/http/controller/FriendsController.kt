@@ -3,9 +3,10 @@ package project.smartlocker.http.controller
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import project.smartlocker.http.models.friends.CreateFriendRequest
-import project.smartlocker.http.models.friends.FriendDTO
-import project.smartlocker.http.models.friends.UpdateFriendRequest
+import project.smartlocker.http.models.friends.input.CreateFriendRequest
+import project.smartlocker.http.models.friends.input.UpdateFriendRequest
+import project.smartlocker.http.models.friends.output.AdminFriendDTO
+import project.smartlocker.http.models.friends.output.FriendDTO
 import project.smartlocker.http.utlis.Uris
 import project.smartlocker.services.FriendsService
 
@@ -15,21 +16,29 @@ import project.smartlocker.services.FriendsService
 class FriendsController(
     private val friendsService: FriendsService
 ) {
+    // admin
     @GetMapping(Uris.Friends.GET_FRIENDS)
-    fun getAllFriends(@PathVariable id: Int): ResponseEntity<List<FriendDTO>> {
+    fun getAllFriends(@PathVariable id: Int): ResponseEntity<List<AdminFriendDTO>> {
         val friends = friendsService.getAllFriends(id)
         return ResponseEntity.ok(friends)
     }
 
     @GetMapping(Uris.Friends.GET_FRIEND)
-    fun getFriend(@PathVariable id: Int, @PathVariable friendId:Int): ResponseEntity<FriendDTO> {
+    fun getFriend(@PathVariable id: Int, @PathVariable friendId:Int): ResponseEntity<AdminFriendDTO> {
         val friend = friendsService.getFriend(id, friendId)
         return ResponseEntity.ok(friend)
     }
 
+    // global
+    @GetMapping(Uris.Friends.GET_FRIENDS_INFO)
+    fun getAllFriendsInfo(@PathVariable id: Int): ResponseEntity<List<FriendDTO>> {
+        val friends = friendsService.getAllFriendsInfo(id)
+        return ResponseEntity.ok(friends)
+    }
+
     @PostMapping(Uris.Friends.ADD_FRIEND)
-    fun createFriends(@PathVariable id: Int, @RequestBody input: CreateFriendRequest): ResponseEntity<Void> {
-        friendsService.createFriends(id, input)
+    fun addFriend(@PathVariable id: Int, @RequestBody input: CreateFriendRequest): ResponseEntity<Void> {
+        friendsService.addFriend(id, input)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
@@ -45,6 +54,3 @@ class FriendsController(
         return ResponseEntity.noContent().build()
     }
 }
-
-
-

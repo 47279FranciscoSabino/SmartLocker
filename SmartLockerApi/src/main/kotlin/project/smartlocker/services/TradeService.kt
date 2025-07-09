@@ -1,52 +1,52 @@
 package project.smartlocker.services
 
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.trade.*
-import project.smartlocker.http.models.trade.CreateTradeRequest
-import project.smartlocker.http.models.trade.TradeDTO
-import project.smartlocker.http.models.trade.UpdateTradeRequest
+import project.smartlocker.http.models.trade.input.CreateTradeRequest
+import project.smartlocker.http.models.trade.input.UpdateTradeRequest
+import project.smartlocker.http.models.trade.output.TradeDTO
+import project.smartlocker.repository.LockerRepository
 import project.smartlocker.repository.TradeRepository
 
 @Service
 class TradeService(
-    private val tradeRepository: TradeRepository
+    private val tradeRepository: TradeRepository,
+    private val lockerRepository: LockerRepository
 ){
-    fun getTrades(): List<TradeDTO> {
-        val trades = tradeRepository.getAllTrades()
-        val outputs = trades.map {
-            val status = tradeRepository.getTradeStatus(it.id)
-            TradeDTO(it.id, it.senderId, it.receiverId, it.lockerId, it.startDate, it.endDate, status!!.read, status.status.toString())
-        }
-        return outputs
+    // admin
+    fun getAllTrades(): List<TradeDTO> {
+        return tradeRepository.getAllTrades()
     }
 
-    fun getTradeById(id: Int): TradeDTO? {
-        val trade = tradeRepository.getTradeById(id)
-        return if (trade != null) {
-            val status = tradeRepository.getTradeStatus(id)
-            TradeDTO(trade.id, trade.senderId, trade.receiverId, trade.lockerId, trade.startDate, trade.endDate, status!!.read, status.status.toString())
-        }
-        else{
-            null
-        }
-    }
-
-    fun createTrade(new: CreateTradeRequest) {
-        val status = TradeEnum.PENDING.toString()
-        val tradeId = tradeRepository.createTrade(new.senderId, new.receiverId, new.lockerId, new.startDate)
-        tradeRepository.createTradeStatus(tradeId, false, status)
-    }
-
-    fun updateTrade(id:Int, trade:UpdateTradeRequest){
-        val tradeId = tradeRepository.updateTrade(id, trade.senderId,trade.receiverId, trade.lockerId, trade.startDate, trade.endDate)
-        tradeRepository.updateTradeStatus(tradeId, trade.read, trade.status)
+    fun getAllTradesStatus(): List<TradeStatus> {
+        return tradeRepository.getAllTradesStatus()
     }
 
     fun deleteTrade(id:Int){
-        val tradeId = tradeRepository.deleteTradeStatus(id)
-        tradeRepository.deleteTrade(tradeId)
+        tradeRepository.deleteTrade(id)
     }
 
+    // global
+    fun getTradeById(id: Int): TradeDTO? {
+        return tradeRepository.getTradeById(id)
+    }
+
+    fun getPendingTrade(locker: Int): TradeDTO? {
+        return tradeRepository.getPendingTrade(locker)
+    }
+
+    fun createTrade(new: CreateTradeRequest) {
+        tradeRepository.createTrade(new.senderId, new.receiverId, new.lockerId)
+    }
+
+    fun updateTrade(id:Int, input: UpdateTradeRequest){
+        val trade = tradeRepository.getTradeById(id)?: throw Exception("User not found")
+
+        val read = input.read ?: trade.read
+        val status = input.status ?: trade.status
+
+        lockerRepository.updateLockerInfo(trade.lockerId, false)
+        tradeRepository.updateTradeStatus(id, read, status)
+    }
 }
-
-

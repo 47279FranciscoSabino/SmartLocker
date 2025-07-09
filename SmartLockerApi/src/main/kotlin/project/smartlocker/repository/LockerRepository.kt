@@ -5,26 +5,57 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.springframework.stereotype.Repository
-import project.smartlocker.domain.locker.Locker
 import project.smartlocker.domain.locker.LockerStatus
+import project.smartlocker.http.models.locker.output.LockerDTO
 
 @Repository
 interface LockerRepository {
+    // admin
     @SqlQuery(
         """
-        SELECT * FROM locker
+        SELECT 
+        l.*,
+        ls.locker_status
+        FROM locker l 
+        INNER JOIN locker_status ls ON ls.locker = l.locker_id
         """
     )
-    fun getAllLockers(): List<Locker>
+    fun getAllLockers(): List<LockerDTO>
 
     @SqlQuery(
         """
-        SELECT * FROM locker WHERE locker_id = :id
+        SELECT * FROM locker_status
+        """
+    )
+    fun getLockerStatus(): List<LockerStatus>
+
+    @SqlQuery(
+        """
+        SELECT 
+        l.*,
+        ls.locker_status
+        FROM locker l 
+        INNER JOIN locker_status ls ON ls.locker = l.locker_id 
+        WHERE l.locker_id = :id
         """
     )
     fun getLockerById(
         @Bind("id") id: Int
-    ): Locker?
+    ): LockerDTO?
+
+    @SqlQuery(
+        """
+        SELECT 
+        l.*,
+        ls.locker_status
+        FROM locker l
+        INNER JOIN locker_status ls ON ls.locker = l.locker_id
+        WHERE l.locker_hash = :hash
+        """
+    )
+    fun getLockerByHash(
+        @Bind("hash") hash: String
+    ): LockerDTO?
 
     @SqlUpdate(
         """
@@ -39,7 +70,7 @@ interface LockerRepository {
         """
         UPDATE locker
         SET locker_module = :module,
-            locker_qr = :qr,
+            locker_hash = :hash,
             locker_active = :active
         WHERE locker_id = :id
         """
@@ -48,47 +79,13 @@ interface LockerRepository {
     fun updateLocker(
         @Bind("id") id: Int,
         @Bind("module") module: Int,
-        @Bind("qr") qr: String,
+        @Bind("hash") hash: String,
         @Bind("active") active: Boolean
     ):Int
 
     @SqlUpdate(
         """
-        INSERT INTO locker (locker_module, locker_qr, locker_active)
-        VALUES (:module, :qr, :active)
-        """
-    )
-    @GetGeneratedKeys
-    fun createLocker(
-        @Bind("module") module: Int,
-        @Bind("qr") qr: String,
-        @Bind("active") active: Boolean
-    ):Int
-
-    //Status
-    @SqlQuery(
-        """
-        SELECT * FROM locker_status WHERE locker = :locker
-        """
-    )
-    fun getLockerStatus(
-        @Bind ("locker") locker: Int
-    ): LockerStatus
-
-    @SqlUpdate(
-        """
-        INSERT INTO locker_status (locker, status)
-        VALUES (:locker, :status)
-        """
-    )
-    fun createLockerStatus(
-        @Bind("locker") locker: Int,
-        @Bind("status") status: String,
-    )
-
-    @SqlUpdate(
-        """
-        UPDATE locker_status SET status = :status WHERE locker = :id
+        UPDATE locker_status SET locker_status = :status WHERE locker = :id
         """
     )
     fun updateLockerStatus(
@@ -98,11 +95,28 @@ interface LockerRepository {
 
     @SqlUpdate(
         """
-        DELETE FROM locker_status WHERE locker = :id
+        INSERT INTO locker (locker_module, locker_hash, locker_active)
+        VALUES (:module, :hash, :active)
         """
     )
     @GetGeneratedKeys
-    fun deleteLockerStatus(
-        @Bind("id") id: Int
+    fun createLocker(
+        @Bind("module") module: Int,
+        @Bind("hash") hash: String,
+        @Bind("active") active: Boolean
+    ):Int
+
+    // global
+    @SqlUpdate(
+        """
+        UPDATE locker
+        SET locker_active = :active
+        WHERE locker_id = :id
+        """
+    )
+    @GetGeneratedKeys
+    fun updateLockerInfo(
+        @Bind("id") id: Int,
+        @Bind("active") active: Boolean
     ):Int
 }

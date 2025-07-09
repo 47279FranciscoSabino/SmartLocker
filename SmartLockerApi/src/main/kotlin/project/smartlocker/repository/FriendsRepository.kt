@@ -1,57 +1,86 @@
 package project.smartlocker.repository
 
 import org.jdbi.v3.sqlobject.customizer.Bind
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.springframework.stereotype.Repository
-import project.smartlocker.domain.friends.Friends
-import project.smartlocker.domain.friends.FriendsStatus
+import project.smartlocker.http.models.friends.output.AdminFriendDTO
+import project.smartlocker.http.models.friends.output.FriendDTO
 
 @Repository
 interface FriendsRepository {
+    //admin
     @SqlQuery(
         """
-        SELECT * FROM friends WHERE user_locker = :user OR friend = :user
+        SELECT
+        f.*,
+        fs.friends_status
+        FROM friends f
+        INNER JOIN friends_status fs ON fs.friend = f.friend AND fs.user_locker = f.user_locker
+        WHERE f.user_locker = :user OR f.friend = :user
         """
     )
     fun getAllFriends(
         @Bind("user") user: Int
-    ): List<Friends>
+    ): List<AdminFriendDTO>
 
     @SqlQuery(
-        """
-        SELECT * FROM friends WHERE user_locker = :user AND friend = :friend
+        """        
+        SELECT 
+        f.*,
+        fs.friends_status
+        FROM friends f
+        INNER JOIN friends_status fs ON fs.friend = f.friend AND fs.user_locker = f.user_locker
+        WHERE f.friend = :friend AND f.user_locker = :user
         """
     )
     fun getFriend(
         @Bind("user") user: Int,
         @Bind("friend") friend: Int
-    ): Friends?
+    ): AdminFriendDTO?
+
+    //global
+    @SqlQuery(
+        """
+        SELECT 
+        u.*,
+        f.friend_date,
+        (CURRENT_DATE - f.friend_date) as days,
+        fs.friends_status
+        FROM friends f
+        INNER JOIN friends_status fs ON fs.friend = f.friend AND fs.user_locker = f.user_locker
+        INNER JOIN user_locker u 
+        ON (f.user_locker = :user AND u.user_id = f.friend) 
+        OR (f.friend = :user AND u.user_id = f.friend)
+        WHERE f.user_locker = :user OR f.friend = :user
+        """
+    )
+    fun getAllFriendsInfo(
+        @Bind("user") user: Int
+    ): List<FriendDTO>
 
     @SqlUpdate(
         """
-        INSERT INTO friends (user_locker, friend, friend_date)
-        VALUES (:user, :friend, :date)
+        INSERT INTO friends (user_locker, friend)
+        VALUES (:user, :friend)
         """
     )
-    fun createFriends(
+    fun addFriend(
         @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-        @Bind("date") date: String
+        @Bind("friend") friend: Int
     )
 
     @SqlUpdate(
         """
-        UPDATE friends
-        SET friend_date = :date
+        UPDATE friends_status 
+        SET friends_status = :status
         WHERE user_locker = :user AND friend = :friend
         """
     )
-    fun updateFriends(
+    fun updateFriend(
         @Bind("user") user: Int,
         @Bind("friend") friend: Int,
-        @Bind("date") date: String
+        @Bind("status") status: String
     )
 
     @SqlUpdate(
@@ -63,50 +92,4 @@ interface FriendsRepository {
         @Bind("user") user: Int,
         @Bind("friend") friend: Int
     )
-
-
-    //Status
-    @SqlQuery(
-        """
-        SELECT * FROM friends_status WHERE user_locker = :user AND friend = :friend
-        """
-    )
-    fun getFriendsStatus(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-    ): FriendsStatus
-
-    @SqlUpdate(
-        """
-        INSERT INTO friends_status (user_locker, friend, friends_status)
-        VALUES (:user, :friend, :status)
-        """
-    )
-    fun createFriendsStatus(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-        @Bind("status") status: String,
-    )
-
-    @SqlUpdate(
-        """
-        UPDATE friends_status SET friends_status = :status WHERE user_locker = :user AND friend = :friend
-        """
-    )
-    fun updateFriendsStatus(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-        @Bind("status") status: String
-    )
-
-    @SqlUpdate(
-        """
-        DELETE FROM friends_status WHERE user_locker = :user AND friend = :friend
-        """
-    )
-    @GetGeneratedKeys
-    fun deleteFriendsStatus(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-    ):Int
 }

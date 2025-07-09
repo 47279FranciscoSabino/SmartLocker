@@ -1,11 +1,11 @@
 package project.smartlocker.services
 
 import org.springframework.stereotype.Service
-import project.smartlocker.domain.module.ModuleEnum
-import project.smartlocker.http.models.module.CreateModuleRequest
-import project.smartlocker.http.models.module.ModuleAppDTO
-import project.smartlocker.http.models.module.ModuleDTO
-import project.smartlocker.http.models.module.UpdateModuleRequest
+import project.smartlocker.domain.module.ModuleStatus
+import project.smartlocker.http.models.module.input.CreateModuleRequest
+import project.smartlocker.http.models.module.input.UpdateModuleRequest
+import project.smartlocker.http.models.module.output.AdminModuleDTO
+import project.smartlocker.http.models.module.output.ModuleDTO
 import project.smartlocker.repository.ModuleRepository
 
 
@@ -13,62 +13,43 @@ import project.smartlocker.repository.ModuleRepository
 class ModuleService(
     private val moduleRepository: ModuleRepository
 ) {
-    fun getAllModules(): List<ModuleDTO> {
-        val modules = moduleRepository.getAllModules()
-        val outputs = modules.map {
-            val status = moduleRepository.getModuleStatus(it.id)
-            ModuleDTO(it.id, it.location, it.maxN, status!!.locName, status.status.toString())
-        }
-        return outputs
+    // admin
+    fun getAllModules(): List<AdminModuleDTO> {
+        return moduleRepository.getAllModules()
     }
 
-    fun getModuleById(id: Int): ModuleDTO? {
-        val module = moduleRepository.getModuleById(id)
-        return if (module != null) {
-            val status = moduleRepository.getModuleStatus(id)
-            ModuleDTO(module.id, module.location, module.maxN, status!!.locName, status.status.toString())
-        }
-        else{
-            null
-        }
+    fun getAllModulesStatus(): List<ModuleStatus> {
+        return moduleRepository.getAllModulesStatus()
+    }
+
+    fun getModuleById(id: Int): AdminModuleDTO? {
+        return moduleRepository.getModuleById(id)
     }
 
     fun createModule(new: CreateModuleRequest) {
         val location = "POINT(${new.longitude} ${new.latitude})"
-        val moduleId = moduleRepository.createModule(location, new.maxN)
-        moduleRepository.createModuleStatus(moduleId, ModuleEnum.AVAILABLE.toString(), new.locName)
+        moduleRepository.createModule(location, new.locName, new.maxN)
     }
 
-    fun updateModule(id: Int, module: UpdateModuleRequest) {
-        val location = "POINT(${module.longitude} ${module.latitude})"
-        val moduleId =moduleRepository.updateModule(id, location, module.maxN)
-        moduleRepository.updateModuleStatus(moduleId, module.status, module.locName)
+    fun updateModule(id: Int, input: UpdateModuleRequest) {
+        val module = moduleRepository.getModuleById(id)?: throw Exception("User not found")
+
+        val location = "POINT(${input.longitude} ${input.latitude})"
+        val locName = input.locName ?: module.locName
+        val maxN = input.maxN ?: module.maxN
+        val status = input.status ?: module.status
+
+        val moduleId = moduleRepository.updateModule(id, location, locName, maxN)
+        moduleRepository.updateModuleStatus(moduleId, status)
     }
 
     fun deleteModule(id: Int){
-        val moduleId = moduleRepository.deleteModuleStatus(id)
-        moduleRepository.deleteModule(moduleId)
+        moduleRepository.deleteModule(id)
     }
-    /*
+
+    // global
     fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{
         val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
-        val outputs = modules.map {
-            val status = moduleRepository.getModuleStatus(it.id)
-            ModuleDTO(it.id, it.location, it.maxN, status!!.locName, status.status.toString())
-        }
-        return outputs
-    }
-
-     */
-
-    fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleAppDTO>{
-        val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
-        /*
-        val outputs = modules.map {
-            ModuleDTO(it.id, it.location, it.maxN, status!!.locName, status.status.toString())
-        }
-
-         */
         return modules
     }
 }

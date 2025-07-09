@@ -6,7 +6,6 @@ import org.jdbi.v3.postgres.PostgresPlugin
 import org.jdbi.v3.sqlobject.SqlObjectPlugin
 import org.postgis.PGgeometry
 import org.postgresql.PGConnection
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +14,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.stereotype.Component
 import project.smartlocker.repository.*
 import project.smartlocker.repository.mappers.*
-//import project.smartlocker.repository.LockerRepository
 import javax.sql.DataSource
 
 @Configuration
@@ -45,13 +43,26 @@ class DatabaseConfiguration {
     fun userRepository(jdbi: Jdbi): UserRepository {
         jdbi.registerRowMapper(UserMapper())
         jdbi.registerRowMapper(UserStatusMapper())
+        jdbi.registerRowMapper(UserDTOMapper())
+        jdbi.registerRowMapper(AdminUserDTOMapper())
+        jdbi.registerRowMapper(AdminUserStatusDTOMapper())
         return jdbi.onDemand(UserRepository::class.java)
+    }
+
+    @Bean
+    fun friendsRepository(jdbi: Jdbi): FriendsRepository {
+        jdbi.registerRowMapper(FriendsMapper())
+        jdbi.registerRowMapper(FriendsStatusMapper())
+        jdbi.registerRowMapper(AdminFriendDTOMapper())
+        jdbi.registerRowMapper(FriendDTOMapper())
+        return jdbi.onDemand(FriendsRepository::class.java)
     }
 
     @Bean
     fun moduleRepository(jdbi: Jdbi): ModuleRepository {
         jdbi.registerRowMapper(ModuleMapper())
         jdbi.registerRowMapper(ModuleStatusMapper())
+        jdbi.registerRowMapper(AdminModuleDTOMapper())
         jdbi.registerRowMapper(ModuleAppMapper())
         return jdbi.onDemand(ModuleRepository::class.java)
     }
@@ -60,6 +71,7 @@ class DatabaseConfiguration {
     fun lockerRepository(jdbi: Jdbi): LockerRepository {
         jdbi.registerRowMapper(LockerMapper())
         jdbi.registerRowMapper(LockerStatusMapper())
+        jdbi.registerRowMapper(LockerDTOMapper())
         return jdbi.onDemand(LockerRepository::class.java)
     }
 
@@ -67,16 +79,15 @@ class DatabaseConfiguration {
     fun tradeRepository(jdbi: Jdbi): TradeRepository {
         jdbi.registerRowMapper(TradeMapper())
         jdbi.registerRowMapper(TradeStatusMapper())
+        jdbi.registerRowMapper(TradeDTOMapper())
         return jdbi.onDemand(TradeRepository::class.java)
     }
 
     @Bean
-    fun friendsRepository(jdbi: Jdbi): FriendsRepository {
-        jdbi.registerRowMapper(FriendsMapper())
-        jdbi.registerRowMapper(FriendsStatusMapper())
-        return jdbi.onDemand(FriendsRepository::class.java)
+    fun hashRepository(jdbi: Jdbi): HashRepository {
+        jdbi.registerRowMapper(QrScanDTOMapper())
+        return jdbi.onDemand(HashRepository::class.java)
     }
-
 }
 
 
