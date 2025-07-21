@@ -20,8 +20,7 @@ class AuthTokenFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val path = request.servletPath
-        if (publicPaths.any { path == it || path.startsWith("$it/") }) {
+        if (publicPaths.contains(request.servletPath)) {
             filterChain.doFilter(request, response)
             return
         }

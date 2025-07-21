@@ -87,9 +87,10 @@ class FriendsController(
     @GetMapping(Uris.Friends.GET_USER_FRIENDS)
     fun getFriends(
         request: HttpServletRequest
-    ): ResponseEntity<List<FriendDTO>> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
 
         val friends = friendsService.getFriends(user.id)
         return ResponseEntity.ok(friends)
@@ -99,12 +100,13 @@ class FriendsController(
     fun addFriend(
         request: HttpServletRequest,
         @RequestBody input: CreateFriendRequest
-    ): ResponseEntity<Void> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
 
         friendsService.addFriend(user.id, input)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        return ResponseEntity.status(HttpStatus.CREATED)
     }
 
     @PutMapping(Uris.Friends.EDIT_FRIEND)
@@ -112,23 +114,25 @@ class FriendsController(
         request: HttpServletRequest,
         @PathVariable friendId: Int,
         @RequestBody input: UpdateFriendRequest
-    ): ResponseEntity<Void> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
 
         friendsService.editFriends(user.id, friendId, input)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok()
     }
 
     @DeleteMapping(Uris.Friends.REMOVE_FRIEND)
     fun removeFriend(
         request: HttpServletRequest,
         @PathVariable friendId:Int
-    ): ResponseEntity<Void> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
 
         friendsService.removeFriends(user.id, friendId)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok()
     }
 }

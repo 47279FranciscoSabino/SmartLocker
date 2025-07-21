@@ -116,7 +116,7 @@ fun QrScanScreen(
                 .background(Color.LightGray)
         ) {
             if (showFriendsList.value && friends!=null){
-                Box(Modifier.weight(3f)) {
+                Box(Modifier.fillMaxSize()) {
                     if (friends.any { it.status == "ACCEPTED" }) {
                         Column(Modifier.padding(10.dp)) {
                             friends.forEach { friend ->

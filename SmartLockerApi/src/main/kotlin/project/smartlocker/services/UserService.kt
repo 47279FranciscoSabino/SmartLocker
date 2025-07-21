@@ -89,7 +89,7 @@ class UserService(
         return TokenDTO(newToken)
     }
 
-    fun logout(user: User) {
+    fun logout(user: UserDTO) {
          userRepository.deleteToken(user.id)
     }
 

@@ -1,6 +1,5 @@
 package project.smartlocker.http.controller
 
-import project.smartlocker.http.models.user.output.UserInfoDTO
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -123,12 +122,12 @@ class UserController(
     @PostMapping(Uris.Users.LOGOUT)
     fun logout(
         request: HttpServletRequest
-    ): ResponseEntity<Void> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
         userService.logout(user)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.noContent()
     }
 
     @PostMapping(Uris.Users.REGISTER)
@@ -143,9 +142,10 @@ class UserController(
     @GetMapping(Uris.Users.PROFILE)
     fun getProfile(
         request: HttpServletRequest
-    ): ResponseEntity<UserDTO> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
 
         val profile = userService.getUserById(user.id)
         return ResponseEntity.ok(profile)
@@ -155,21 +155,21 @@ class UserController(
     fun updateProfile(
         request: HttpServletRequest,
         @RequestBody update: UpdateUserRequest
-    ): ResponseEntity<Void> {
-        val user = request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
-
+    ): Any {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
         userService.updateUser(user.id, update)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.noContent()
     }
 
     @GetMapping(Uris.Users.USER_INFO)
     fun getUserInfo(
         request: HttpServletRequest,
         @PathVariable id: Int
-    ): ResponseEntity<UserInfoDTO> {
-        request.getAttribute("authenticatedUser") as? User
-            ?: throw RuntimeException("No user in context")
+    ): Any {
+        if (request.getAttribute("authenticatedUser") !is UserDTO) return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("Unauthorized: Please log in to access this resource.")
         val user = userService.getUserInfo(id)
         return ResponseEntity.ok(user)
     }

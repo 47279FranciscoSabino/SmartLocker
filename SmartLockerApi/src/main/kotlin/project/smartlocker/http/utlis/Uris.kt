@@ -37,16 +37,6 @@ object Uris {
         const val GET_FRIEND = "/admin/user/{id}/friend/{friendId}"     //*
         const val GET_FRIENDS ="/admin/user/{id}/friends"               //*
 
-        /*
-        // global
-        const val GET_FRIENDS_INFO = "/user/{id}/friends"               //getFriends
-        const val CREATE_FRIEND = "/user/{id}/friend"                   //addFriend
-        const val UPDATE_FRIEND = "/user/{id}/friend/{friendId}"        //editFriend
-        const val DELETE_FRIEND = "/user/{id}/friend/{friendId}"        //deleteFriend
-
-
-         */
-
         // app
         const val GET_USER_FRIENDS = "/friends"                         //getFriendsList
         const val ADD_FRIEND = "/friend"                                //addFriend
@@ -64,11 +54,6 @@ object Uris {
 
         //
         const val GET_MODULE_BY_ID = "/module/{id}"                     //*
-
-        /*
-        //global
-        const val GET_MODULE_GEO = "/geo/{latitude}/{longitude}"        //getMap
-         */
 
         // app
         const val GET_MAP = "/map"                                      //getMap
@@ -101,12 +86,6 @@ object Uris {
         const val GET_ALL_TRADE_STATUS = "/admin/trades/status"
         const val DELETE_TRADE = "/admin/trade/{id}"
 
-        //global
-        //const val GET_TRADE_BY_ID = "/trade/{id}"                     //getTradeInfo
-        const val GET_PENDING_TRADE = "/trade/pending/{locker}"         //getPending
-        //const val CREATE_TRADE = "/trade"                             //createTrade
-        //const val UPDATE_TRADE = "/trade/{id}"                        //confirmTrade
-
         // app
         const val GET_TRADE = "/trade/{tradeId}"                        //getTradeInfo
         const val LOCKER_TRADE = "/trade/locker/{lockerId}"             //getLockerTrade
@@ -118,11 +97,6 @@ object Uris {
     object History {
         //admin
         const val GET_BY_LOCKER = "/locker/{id}/history"
-
-        //global
-        const val USER_HISTORY = "/user/{id}/history"                   //getFullHistory
-        const val GET_BY_RECEIVER = "/receiver/{id}"                    //getReceiverHistory
-        const val GET_BY_SENDER = "/sender/{id}"                        //getSenderHistory
 
         // app
         const val USER_FULL_HISTORY = "/history"                        // getFullHistory
