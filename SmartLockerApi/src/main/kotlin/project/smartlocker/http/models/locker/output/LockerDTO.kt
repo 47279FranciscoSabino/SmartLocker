@@ -5,5 +5,6 @@ data class LockerDTO(
     val module: Int,
     val hash: String,
     val active: Boolean,
-    val status: String
+    val status: String,
+    val ip: String
 )

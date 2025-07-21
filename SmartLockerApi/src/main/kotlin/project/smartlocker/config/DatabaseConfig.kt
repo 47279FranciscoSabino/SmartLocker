@@ -17,7 +17,7 @@ import project.smartlocker.repository.mappers.*
 import javax.sql.DataSource
 
 @Configuration
-class DatabaseConfiguration {
+class DatabaseConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
@@ -81,6 +81,12 @@ class DatabaseConfiguration {
         jdbi.registerRowMapper(TradeStatusMapper())
         jdbi.registerRowMapper(TradeDTOMapper())
         return jdbi.onDemand(TradeRepository::class.java)
+    }
+
+    @Bean
+    fun historyRepository(jdbi: Jdbi): HistoryRepository {
+        jdbi.registerRowMapper(TradeInfoDTOMapper())
+        return jdbi.onDemand(HistoryRepository::class.java)
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.example.smartlockerandroid.data.service
 
 import com.example.smartlockerandroid.data.model.locker.output.LockerDTO
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 
 interface LockerService {
@@ -9,5 +10,5 @@ interface LockerService {
     suspend fun getLockerById(@Path("id") id: Int): LockerDTO
 
     @GET("locker/hash/{hash}")
-    suspend fun getLockerByHash(@Path("hash") hash: String): LockerDTO
+    suspend fun getLockerByHash(@Path("hash") hash: String, @Header("Authorization") token: String): LockerDTO
 }

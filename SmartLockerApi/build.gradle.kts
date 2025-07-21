@@ -46,6 +46,9 @@ dependencies {
 	implementation("net.postgis:postgis-jdbc:2.5.0")
 
 	implementation("com.google.zxing:core:3.5.3")
+
+	//comonicacao com o cacifo
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 kotlin {

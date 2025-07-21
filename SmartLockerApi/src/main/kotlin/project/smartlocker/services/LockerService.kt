@@ -6,7 +6,6 @@ import project.smartlocker.http.models.hash.input.CreateHashRequest
 import project.smartlocker.http.models.locker.input.CreateLockerRequest
 import project.smartlocker.http.models.locker.input.UpdateLockerRequest
 import project.smartlocker.http.models.locker.output.LockerDTO
-import project.smartlocker.repository.HashRepository
 import project.smartlocker.repository.LockerRepository
 import java.util.*
 

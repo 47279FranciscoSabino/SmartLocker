@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.smartlockerandroid.data.RetrofitInstance
 import com.example.smartlockerandroid.ui.screens.HistoryScreen
-import com.example.smartlockerandroid.ui.screens.HomePageScreen
+import com.example.smartlockerandroid.ui.screens.home.HomePageScreen
 import com.example.smartlockerandroid.ui.screens.QrScanScreen
 import com.example.smartlockerandroid.ui.screens.profile.ProfileScreen
 import com.example.smartlockerandroid.ui.screens.mainscreen.MainScreen
@@ -26,33 +26,28 @@ fun Nav(
         composable("home") {
             HomePageScreen(
                 onInfoRequest = { activity?.finish() },
-                onClickLogIn = { navController.navigate("main") }
+                onClickLogIn = { navController.navigate("main") },
+                userService = RetrofitInstance.userService
             )
         }
 
         composable("main"){
-            val userI = 1
             MainScreen(
                 onInfoRequest = { activity?.finish() },
-                onProfileRequest = { navController.navigate("profile/$userI") },
-                onHistoryRequest = { userId -> navController.navigate("history/$userId") },
+                onProfileRequest = { navController.navigate("profile") },
+                onHistoryRequest = { navController.navigate("history") },
                 onTradeInfoRequest = { tradeId -> navController.navigate("tradeInfo/$tradeId") },
-                onNewRequest = { navController.navigate("scan_qr") },
-                userId = userI
+                onNewRequest = { navController.navigate("scan_qr") }
             )
         }
 
-        composable("history/{userId}"){
-            val userId = it.arguments?.getString("userId")?.toIntOrNull()
+        composable("history"){
             HistoryScreen(
                 onInfoRequest = { activity?.finish() },
-                onProfileRequest = { navController.navigate("profile/$userId") },
+                onProfileRequest = { navController.navigate("profile") },
                 onBackRequest = { navController.popBackStack() },
                 onClickRequest = { tradeId -> navController.navigate("tradeInfo/$tradeId") },
-                historyService = RetrofitInstance.historyService,
-                lockerService = RetrofitInstance.lockerService,
-                moduleService = RetrofitInstance.moduleService,
-                userId = userId!!
+                historyService = RetrofitInstance.historyService
             )
         }
 
@@ -60,47 +55,38 @@ fun Nav(
             val tradeId = it.arguments?.getString("tradeId")?.toIntOrNull()
             TradeScreen(
                 onInfoRequest = { activity?.finish() },
-                onProfileRequest = { navController.navigate("profile/1") },
+                onProfileRequest = { navController.navigate("profile") },
                 onBackRequest = { navController.popBackStack() },
                 tradeService = RetrofitInstance.tradeService,
                 userService = RetrofitInstance.userService,
-                lockerService = RetrofitInstance.lockerService,
-                moduleService = RetrofitInstance.moduleService,
                 tradeId = tradeId!!
             )
         }
 
         composable("scan_qr") {
             QrScanScreen(
-                onScanResult = { hash -> },
-                lockerService = RetrofitInstance.lockerService,
+                onBackRequest = { navController.popBackStack() },
                 tradeService = RetrofitInstance.tradeService,
                 scanService = RetrofitInstance.scanService,
-                friendsService = RetrofitInstance.friendsService,
-                currentUserId = 1,
-                onSuccessNavigate = {}
+                friendsService = RetrofitInstance.friendsService
             )
         }
 
-        composable("profile/{userId}") {
-            val userId = it.arguments?.getString("userId")?.toIntOrNull()
+        composable("profile") {
             ProfileScreen(
                 onInfoRequest = { activity?.finish() },
                 onBackRequest = { navController.popBackStack() },
-                onSettingsClick = { navController.navigate("settings/${userId}") },
-                onLogoutClick = { activity?.finish() },
+                onSettingsClick = { navController.navigate("settings") },
+                onLogoutClick = { navController.navigate("home") },
                 userService = RetrofitInstance.userService,
                 friendsService = RetrofitInstance.friendsService,
-                userId = userId!!,
             )
         }
 
-        composable("settings/{userId}"){
-            val userId = it.arguments?.getString("userId")?.toIntOrNull()
+        composable("settings"){
             SettingsScreen(
                 onBackRequest = { navController.popBackStack() },
-                userService = RetrofitInstance.userService,
-                userId = userId!!
+                userService = RetrofitInstance.userService
             )
         }
 

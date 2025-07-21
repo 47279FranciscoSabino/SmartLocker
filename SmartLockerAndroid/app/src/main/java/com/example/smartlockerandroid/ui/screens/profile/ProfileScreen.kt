@@ -32,12 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.R
+import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.model.friends.input.UpdateFriendRequest
 import com.example.smartlockerandroid.data.model.user.output.UserDTO
 import com.example.smartlockerandroid.data.service.FriendsService
@@ -59,12 +61,15 @@ fun ProfileScreen(
     onSettingsClick: ((UserDTO) -> Unit) = {},
     onLogoutClick: (() -> Unit) = {},
     userService: UserService,
-    friendsService: FriendsService,
-    userId: Int = 1
-
+    friendsService: FriendsService
 ) {
+    val context = LocalContext.current
+    val token = remember { mutableStateOf<String?>(null) }
+    token.value = TokenProvider.getToken(context)
+
+
     val profileViewModel: ProfileViewModel = viewModel(
-        factory = viewModelInit { ProfileViewModel(userService, friendsService, userId) }
+        factory = viewModelInit { ProfileViewModel(userService, friendsService, token.value) }
     )
 
     val showSearch = remember { mutableStateOf(false) }
@@ -172,13 +177,13 @@ fun ProfileScreen(
                                             name = friend.name,
                                             onAccept = {
                                                 if (user != null) {
-                                                    profileViewModel.updateFriendRequest(user.id, friend.user, UpdateFriendRequest("ACCEPTED"))
+                                                    profileViewModel.updateFriendRequest(friend.user, UpdateFriendRequest("ACCEPTED"))
                                                 }
                                                 showPending.value = false
                                             },
                                             onDecline = {
                                                 if (user != null) {
-                                                    profileViewModel.removeFriendRequest(user.id, friend.user)
+                                                    profileViewModel.removeFriendRequest(friend.user)
                                                 }
                                                 showPending.value = false
                                             }
@@ -205,20 +210,18 @@ fun ProfileScreen(
                                 friends.forEach { friend ->
                                     if (friend.status == "ACCEPTED") {
                                         Box(modifier = Modifier.background(MyBlue)) {
-                                            FriendTile(
-                                                name = friend.name,
-                                                days = friend.days,
-                                                onBlock = {
-                                                    if (user != null) {
-                                                        profileViewModel.updateFriendRequest(user.id, friend.user, UpdateFriendRequest("BLOCKED"))
+                                            if (user != null) {
+                                                FriendTile(
+                                                    name = if(friend.user != user.id) friend.name else user.username,
+                                                    days = friend.days,
+                                                    onBlock = {
+                                                        profileViewModel.updateFriendRequest(friend.user, UpdateFriendRequest("BLOCKED"))
+                                                    },
+                                                    onUnfriend = {
+                                                        profileViewModel.removeFriendRequest(friend.user)
                                                     }
-                                                },
-                                                onUnfriend = {
-                                                    if (user != null) {
-                                                        profileViewModel.removeFriendRequest(user.id, friend.user)
-                                                    }
-                                                }
-                                            )
+                                                )
+                                            }
                                         }
                                         Spacer(modifier = Modifier.height(5.dp))
                                     }
@@ -236,7 +239,11 @@ fun ProfileScreen(
                     }) {
                         Text(text = "settings", color = Color.Gray)
                     }
-                    TextButton(onClick = onLogoutClick) {
+                    TextButton(
+                        onClick ={
+                            TokenProvider.clearToken(context)
+                            onLogoutClick()
+                        } ) {
                         Text(text = "log out", color = Color.Red)
                     }
                 }
@@ -245,8 +252,7 @@ fun ProfileScreen(
         SearchFriendDialog(
             show = showSearch.value,
             onDismiss = { showSearch.value = false },
-            onSendRequest = { username ->
-                profileViewModel.sendFriendRequest(userId, username)
+            onSendRequest = { user -> profileViewModel.sendFriendRequest(user)
             },
             viewModel = profileViewModel
         )

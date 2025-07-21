@@ -2,7 +2,6 @@ package com.example.smartlockerandroid.ui.screens.mainscreen
 
 import android.Manifest
 import android.util.Log
-import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.ModuleService
 import com.example.smartlockerandroid.ui.components.main.MapBox
 import com.example.smartlockerandroid.ui.components.main.NewTradeButton
@@ -67,10 +67,8 @@ fun NewTradeScreen(
 
             client.getCurrentLocation(request, null)
                 .addOnSuccessListener { loc ->
-                    Log.i("NewTradeScreen", "Current location: $loc")
                     loc?.let {
                         location.value = GeoPoint(it.latitude, it.longitude)
-                        Log.i("NewTradeScreen", location.value.toString())
                     }
                 }
                 .addOnFailureListener {

@@ -18,13 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.smartlockerandroid.data.model.user.output.UserDTO
 import com.example.smartlockerandroid.viewmodel.ProfileViewModel
 
 @Composable
 fun SearchFriendDialog(
     show: Boolean,
     onDismiss: () -> Unit,
-    onSendRequest: (String) -> Unit,
+    onSendRequest: (UserDTO) -> Unit,
     viewModel: ProfileViewModel
 ) {
     if (!show) return
@@ -54,7 +55,7 @@ fun SearchFriendDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onSendRequest(viewModel.searchedUser!!.username)
+                                    onSendRequest(viewModel.searchedUser!!)
                                     onDismiss()
                                 }
                                 .padding(8.dp),

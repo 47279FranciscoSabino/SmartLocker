@@ -9,8 +9,8 @@
 -- Insert Tables
 \i 'sql/user/insert.sql'
 \i 'sql/friends/insert.sql'
-\i 'sql/locker/insert.sql'
 \i 'sql/module/insert.sql'
+\i 'sql/locker/insert.sql'
 \i 'sql/trade/insert.sql'
 
 -- Triggers

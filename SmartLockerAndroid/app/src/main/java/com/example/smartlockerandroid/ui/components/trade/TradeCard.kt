@@ -1,5 +1,6 @@
 package com.example.smartlockerandroid.ui.components.trade
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,10 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.smartlockerandroid.data.model.trade.output.TradeDTO
+import com.example.smartlockerandroid.data.model.trade.output.TradeInfoDTO
 
 @Composable
-fun TradeCard(trade: TradeDTO, location:String, sender:String, receiver:String){
+fun TradeCard(trade: TradeInfoDTO, sender:String, receiver:String){
+    Log.i("TEST", trade.toString())
+    Log.i("TEST", sender)
+    Log.i("TEST", receiver)
     Box{
         Text(
             text = trade.status,
@@ -43,7 +47,7 @@ fun TradeCard(trade: TradeDTO, location:String, sender:String, receiver:String){
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = location,
+                text = trade.location,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.DarkGray,
                 fontSize = 28.sp
@@ -80,5 +84,5 @@ fun TradeCard(trade: TradeDTO, location:String, sender:String, receiver:String){
 @Preview
 @Composable
 fun TradeCardPreview(){
-    TradeCard( TradeDTO(1,1, 2, 3, "02-05-2020", "03-09-2022", false, "COMPLETED"), "coina", "Andre", "Miguel")
+    TradeCard( TradeInfoDTO(1,1, 2, 3, "02-05-2020", "03-09-2022", false, "COMPLETED", "coina"), "Andre", "Miguel")
 }

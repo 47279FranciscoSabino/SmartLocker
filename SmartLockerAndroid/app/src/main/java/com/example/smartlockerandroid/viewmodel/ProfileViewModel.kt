@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val userService: UserService,
     private val friendsService: FriendsService,
-    private val userId: Int
+    private val token: String?
 ) : ViewModel() {
 
     var user by mutableStateOf<UserDTO?>(null)
@@ -40,9 +40,9 @@ class ProfileViewModel(
                 isLoading = true
                 errorMessage = null
 
-                user = userService.getUserById(userId)
-                friends = friendsService.getAllFriends(userId)
-
+                val bearerToken = "Bearer ${token}"
+                user = userService.getProfile(bearerToken)
+                friends = friendsService.getUserFriends(bearerToken)
             } catch (e: Exception) {
                 errorMessage = e.message ?: "Error on profile request"
             } finally {
@@ -57,7 +57,7 @@ class ProfileViewModel(
     var searchQuery by mutableStateOf("")
         private set
 
-    fun onSearchQueryChanged(query: String) {
+    fun onSearchQueryChanged(query: String) {1
         searchQuery = query
         searchUserByUsername(query)
     }
@@ -67,7 +67,9 @@ class ProfileViewModel(
             try {
                 isLoading = true
                 errorMessage = null
-                searchedUser = userService.getUserByUsername(username)
+
+                val bearerToken = "Bearer ${token}"
+                searchedUser = userService.getUserByUsername(username, bearerToken)
             } catch (e: Exception) {
                 searchedUser = null
                 errorMessage = e.message ?: "User not found"
@@ -77,14 +79,14 @@ class ProfileViewModel(
         }
     }
 
-    fun sendFriendRequest(myId: Int, username: String) {
+    fun sendFriendRequest(friend: UserDTO) {
         viewModelScope.launch {
             try{
                 isLoading = true
                 errorMessage = null
 
-                val friend = userService.getUserByUsername(username)
-                friendsService.addFriend(myId, friend.id)
+                val bearerToken = "Bearer ${token}"
+                friendsService.addFriend(friend.id, bearerToken)
             } catch (e: Exception){
                 errorMessage = e.message?: "Error: user not found"
             } finally {
@@ -93,13 +95,14 @@ class ProfileViewModel(
         }
     }
 
-    fun updateFriendRequest(myId: Int, friend: Int, input: UpdateFriendRequest){
+    fun updateFriendRequest(friend: Int, input: UpdateFriendRequest){
         viewModelScope.launch {
             try{
                 isLoading = true
                 errorMessage = null
 
-                friendsService.updateFriends(myId, friend, input)
+                val bearerToken = "Bearer ${token}"
+                friendsService.editFriend(friend, input, bearerToken)
                 loadProfile()
             } catch (e:Exception){
                 errorMessage = e.message?:"Error updating friend"
@@ -109,13 +112,14 @@ class ProfileViewModel(
         }
     }
 
-    fun removeFriendRequest(myId: Int, friend: Int){
+    fun removeFriendRequest(friend: Int){
         viewModelScope.launch {
             try{
                 isLoading = true
                 errorMessage = null
 
-                friendsService.deleteFriends(myId, friend)
+                val bearerToken = "Bearer ${token}"
+                friendsService.removeFriend(friend, bearerToken)
                 loadProfile()
             } catch (e:Exception){
                 errorMessage = e.message?:"Error updating friend"

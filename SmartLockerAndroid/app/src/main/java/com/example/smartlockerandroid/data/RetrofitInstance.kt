@@ -18,7 +18,8 @@ object RetrofitInstance {
     private val client = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
-        }).build()
+        })
+        .build()
 
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)

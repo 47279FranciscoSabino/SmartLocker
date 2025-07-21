@@ -12,4 +12,7 @@ interface ModuleService {
     @GET("geo/{latitude}/{longitude}")
     suspend fun getModulesByRadius(@Path("latitude") latitude: Double, @Path("longitude") longitude: Double, @Query("radius") radius: Double): List<ModuleDTO>
 
+
+    @GET("map")
+    suspend fun getMap(@Query("latitude") latitude: Double, @Query("longitude") longitude: Double, @Query("radius") radius: Double): List<ModuleDTO>
 }

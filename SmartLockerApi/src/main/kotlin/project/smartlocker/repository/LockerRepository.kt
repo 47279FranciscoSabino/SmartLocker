@@ -109,14 +109,14 @@ interface LockerRepository {
     // global
     @SqlUpdate(
         """
-        UPDATE locker
-        SET locker_active = :active
-        WHERE locker_id = :id
+        UPDATE locker_status
+        SET locker_status = :status
+        WHERE locker = :id
         """
     )
     @GetGeneratedKeys
     fun updateLockerInfo(
         @Bind("id") id: Int,
-        @Bind("active") active: Boolean
+        @Bind("status") status: String
     ):Int
 }

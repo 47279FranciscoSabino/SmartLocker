@@ -1,5 +1,6 @@
 package project.smartlocker.services
 
+import org.apache.coyote.BadRequestException
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.module.ModuleStatus
 import project.smartlocker.http.models.module.input.CreateModuleRequest
@@ -32,9 +33,13 @@ class ModuleService(
     }
 
     fun updateModule(id: Int, input: UpdateModuleRequest) {
-        val module = moduleRepository.getModuleById(id)?: throw Exception("User not found")
+        val module = moduleRepository.getModuleById(id)?: throw Exception("Module not found")
 
-        val location = "POINT(${input.longitude} ${input.latitude})"
+        val location = if( input.longitude == null || input.latitude == null){
+            "POINT(${module.location.longitude} ${module.location.latitude})"
+        }else{
+            "POINT(${input.longitude} ${input.latitude})"
+        }
         val locName = input.locName ?: module.locName
         val maxN = input.maxN ?: module.maxN
         val status = input.status ?: module.status
@@ -44,12 +49,30 @@ class ModuleService(
     }
 
     fun deleteModule(id: Int){
+        moduleRepository.getModuleById(id)?: throw Exception("User not found")
         moduleRepository.deleteModule(id)
     }
 
+/*
     // global
     fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{
         val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
+        return modules
+    }
+ */
+
+    // app
+    fun getMap(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{
+        if (latitude !in -90.0..90.0) {
+            throw BadRequestException("Latitude must be between -90 and 90.")
+        }
+        if (longitude !in -180.0..180.0) {
+            throw BadRequestException("Longitude must be between -180 and 180.")
+        }
+        if (radius <= 0) {
+            throw BadRequestException("Radius must be greater than 0.")
+        }
+        val modules = moduleRepository.getMap(longitude, latitude, radius)
         return modules
     }
 }

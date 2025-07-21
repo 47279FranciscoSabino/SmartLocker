@@ -1,5 +1,6 @@
 package com.example.smartlockerandroid.ui.screens.profile
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,9 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.UserService
 import com.example.smartlockerandroid.ui.components.TopBar
 import com.example.smartlockerandroid.utils.viewModelInit
@@ -30,11 +33,16 @@ import com.example.smartlockerandroid.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(
     onBackRequest: () -> Unit,
-    userService: UserService,
-    userId: Int,
+    userService: UserService
 ) {
+    val context = LocalContext.current
+    val token = remember { mutableStateOf<String?>(null) }
+    token.value = TokenProvider.getToken(context)
+
+
+
     val settingsViewModel: SettingsViewModel = viewModel(
-        factory = viewModelInit { SettingsViewModel(userService, userId) }
+        factory = viewModelInit { SettingsViewModel(userService, token.value) }
     )
 
     val user = settingsViewModel.user
@@ -113,9 +121,10 @@ fun SettingsScreen(
                         Button(
                             onClick = {
                                 if (!passwordMismatch) {
-                                    val result = settingsViewModel.updateUser(
+                                    settingsViewModel.updateUser(
+                                        token.value,
                                         email.value,
-                                        newPassword.value
+                                        newPassword.value,
                                     )
                                     onBackRequest()
                                 }

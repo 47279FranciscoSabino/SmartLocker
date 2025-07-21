@@ -38,7 +38,7 @@ class NewTradeViewModel(
             try {
                 isLoading = true
                 errorMessage = null
-                modules = moduleService.getModulesByRadius(loc.latitude, loc.longitude, 50000.0)
+                modules = moduleService.getMap(loc.latitude, loc.longitude, 50000.0)
             } catch (e: Exception) {
                 errorMessage = e.message ?: "Error on module request"
             } finally {

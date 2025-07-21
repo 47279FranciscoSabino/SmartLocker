@@ -1,5 +1,6 @@
 package project.smartlocker.repository.mappers
 
+import TradeInfoDTO
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import project.smartlocker.domain.locker.LockerEnum
@@ -46,6 +47,21 @@ class TradeDTOMapper(): RowMapper<TradeDTO> {
             rs.getString("trade_enddate"),
             rs.getBoolean( "trade_read"),
             rs.getString("trade_status")
+        )
+    }
+}
+
+class TradeInfoDTOMapper(): RowMapper<TradeInfoDTO> {
+    //@Throws(SQLException::class)
+    override fun map(rs: ResultSet, ctx: StatementContext?): TradeInfoDTO {
+        return TradeInfoDTO(
+            rs.getInt("trade_id"),
+            rs.getInt("trade_sender"),
+            rs.getInt("trade_receiver"),
+            rs.getString("trade_startdate"),
+            rs.getString("trade_enddate"),
+            rs.getString("trade_status"),
+            rs.getString("module_location_name")
         )
     }
 }

@@ -9,10 +9,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService
 import com.example.smartlockerandroid.data.service.TradeService
@@ -29,16 +33,17 @@ fun TradeScreen(
     onBackRequest: (() -> Unit)? = null,
     tradeService: TradeService,
     userService: UserService,
-    lockerService: LockerService,
-    moduleService: ModuleService,
     tradeId: Int
 ){
+    val context = LocalContext.current
+    val token = remember { mutableStateOf<String?>(null) }
+    token.value = TokenProvider.getToken(context)
+
     val tradeViewModel: TradeViewModel = viewModel(
-        factory = viewModelInit { TradeViewModel(tradeService, lockerService, moduleService, userService, tradeId) }
+        factory = viewModelInit { TradeViewModel(tradeService, userService, tradeId, token.value) }
     )
 
     val trade = tradeViewModel.trade
-    val module = tradeViewModel.module
     val sender = tradeViewModel.sender
     val receiver = tradeViewModel.receiver
 
@@ -69,13 +74,11 @@ fun TradeScreen(
                 }
 
                 else -> {
-                    if (trade != null) {
-                        TradeCard(trade, module?.locName.toString(), sender!!.username, receiver!!.username)
+                    if (trade != null && sender !=null && receiver != null) {
+                        TradeCard(trade, sender.username, receiver.username)
                     }
                 }
             }
         }
     }
-
-
 }

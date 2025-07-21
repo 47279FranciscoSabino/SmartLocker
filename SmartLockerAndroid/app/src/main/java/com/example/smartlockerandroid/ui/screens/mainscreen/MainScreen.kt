@@ -21,10 +21,9 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     onInfoRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null,
-    onHistoryRequest: ((Int) -> Unit) = { },
+    onHistoryRequest: (() -> Unit) = { },
     onTradeInfoRequest: ((Int) -> Unit) = {},
-    onNewRequest: () -> Unit = { },
-    userId: Int
+    onNewRequest: () -> Unit = { }
 ){
     val tabs = listOf("New Trade", "My Trades")
     val pagerState = rememberPagerState(
@@ -64,10 +63,7 @@ fun MainScreen(
                     1 -> MyTradesScreen(
                         onClickRequest = onTradeInfoRequest,
                         onHistoryRequest = onHistoryRequest,
-                        historyService = RetrofitInstance.historyService,
-                        lockerService = RetrofitInstance.lockerService,
-                        moduleService = RetrofitInstance.moduleService,
-                        userId = userId
+                        historyService = RetrofitInstance.historyService
                     )
                 }
             }

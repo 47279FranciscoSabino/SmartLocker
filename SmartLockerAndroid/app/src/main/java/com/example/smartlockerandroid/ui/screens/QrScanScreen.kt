@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.FriendsService
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ScanService
@@ -37,16 +39,19 @@ import com.example.smartlockerandroid.utils.viewModelInit
 import com.example.smartlockerandroid.viewmodel.QrScanViewModel
 import io.github.g00fy2.quickie.QRResult
 import io.github.g00fy2.quickie.ScanQRCode
+
 @Composable
 fun QrScanScreen(
-    onScanResult: (String) -> Unit,
-    lockerService: LockerService,
+    onBackRequest: () -> Unit,
     tradeService: TradeService,
     scanService: ScanService,
-    friendsService: FriendsService,
-    currentUserId: Int,
-    onSuccessNavigate: () -> Unit
+    friendsService: FriendsService
 ) {
+    val context = LocalContext.current
+    val token = remember { mutableStateOf<String?>(null) }
+    token.value = TokenProvider.getToken(context)
+
+
     val scannedValue = remember { mutableStateOf<String?>(null) }
 
     val viewModel: QrScanViewModel? = if (scannedValue.value != null) {
@@ -54,10 +59,10 @@ fun QrScanScreen(
             factory = viewModelInit {
                 QrScanViewModel(
                     scanService,
-                    lockerService,
                     tradeService,
                     friendsService,
-                    scannedValue.value
+                    scannedValue.value,
+                    token.value
                 )
             }
         )
@@ -66,7 +71,6 @@ fun QrScanScreen(
     val locker = viewModel?.locker
 
     val friends = viewModel?.friends
-
 
     val scanLauncher = rememberLauncherForActivityResult(
         contract = ScanQRCode(),
@@ -120,7 +124,8 @@ fun QrScanScreen(
                                     Box(modifier = Modifier
                                         .background(MyBlue)
                                         .clickable {
-                                            viewModel.createTrade(currentUserId, friend.user, locker!!.id)
+                                            viewModel.createTrade(friend.user, locker!!.id)
+                                            onBackRequest()
                                         }
                                     ) {
                                         CreateTradeFriend(
@@ -151,7 +156,7 @@ fun QrScanScreen(
                     }
 
                     locker != null -> {
-                        if (locker.active) {
+                        if (locker.status != "AVAILABLE") {
                             Text("Locker ocupado. Confirmar levantamento?")
                             Spacer(Modifier.height(16.dp))
                             Button(onClick = {
@@ -198,12 +203,12 @@ fun QrScanScreen(
                     TextButton(onClick = {
                         showConfirmDialog.value = false
                         if (isPickup.value) {
-                            viewModel?.confirmPickup(currentUserId, locker!!)
+                            viewModel?.confirmPickup(locker!!)
+                            onBackRequest()
                         } else {
-                            viewModel?.loadFriends(currentUserId)
+                            viewModel?.loadFriends()
                             showFriendsList.value = true
                         }
-                        onSuccessNavigate()
                     }) {
                         Text("Confirmar")
                     }

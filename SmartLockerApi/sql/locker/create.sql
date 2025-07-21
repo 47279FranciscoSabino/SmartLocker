@@ -2,7 +2,8 @@
 CREATE TABLE LOCKER (
     locker_id SERIAL PRIMARY KEY,
     locker_module int NOT NULL,
-    locker_hash varchar(255) NOT NULL UNIQUE ,
+    locker_hash varchar(255) NOT NULL UNIQUE,
+    locker_ip varchar(255) NOT NULL UNIQUE,
     locker_active boolean NOT NULL,
     FOREIGN KEY (locker_module) REFERENCES MODULE(module_id) ON DELETE CASCADE
 );

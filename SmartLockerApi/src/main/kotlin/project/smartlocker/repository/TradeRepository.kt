@@ -1,5 +1,6 @@
 package project.smartlocker.repository
 
+import TradeInfoDTO
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -173,5 +174,23 @@ interface TradeRepository {
     fun getUserTrades(
         @Bind("user") user: Int
     ): List<TradeDTO>
+
+    @SqlQuery(
+        """
+        SELECT
+        t.*,
+        ts.trade_read,
+        ts.trade_status,
+        m.module_location_name
+        FROM trade t
+        INNER JOIN trade_status ts ON ts.trade = t.trade_id
+        INNER JOIN locker l ON l.locker_id = t.trade_locker
+        INNER JOIN module m ON m.module_id = l.locker_module
+        WHERE trade_id = :id   
+        """
+    )
+    fun getTrade(
+        @Bind ("id")id: Int
+    ): TradeInfoDTO?
 
 }

@@ -38,7 +38,8 @@ class LockerDTOMapper(): RowMapper<LockerDTO> {
             rs.getInt("locker_module"),
             rs.getString("locker_hash"),
             rs.getBoolean("locker_active"),
-            rs.getString("locker_status")
+            rs.getString("locker_status"),
+            rs.getString("locker_ip")
         )
     }
 }

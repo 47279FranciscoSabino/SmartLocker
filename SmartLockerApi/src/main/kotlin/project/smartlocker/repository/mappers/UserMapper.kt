@@ -17,7 +17,8 @@ class UserMapper(): RowMapper<User> {
             rs.getInt("user_id"),
             rs.getString("user_name"),
             rs.getString("user_email"),
-            rs.getString("user_password")
+            rs.getString("user_password"),
+            rs.getString("user_token")
         )
     }
 }
@@ -62,7 +63,8 @@ class UserDTOMapper(): RowMapper<UserDTO> {
             rs.getInt("user_id"),
             rs.getString("user_name"),
             rs.getString("user_email"),
-            rs.getString("user_status")
+            rs.getString("user_status"),
+            rs.getString("user_role")
         )
     }
 }

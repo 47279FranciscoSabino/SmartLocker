@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartlockerandroid.data.model.module.output.ModuleDTO
 import com.example.smartlockerandroid.data.model.trade.output.TradeDTO
+import com.example.smartlockerandroid.data.model.trade.output.TradeInfoDTO
 import com.example.smartlockerandroid.data.model.user.output.UserDTO
+import com.example.smartlockerandroid.data.model.user.output.UserInfoDTO
 import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ModuleService
 import com.example.smartlockerandroid.data.service.TradeService
@@ -16,19 +18,17 @@ import kotlinx.coroutines.launch
 
 class TradeViewModel(
     private val tradeService: TradeService,
-    private val lockerService: LockerService,
-    private val moduleService: ModuleService,
     private val userService: UserService,
-    private val tradeId: Int
+    private val tradeId: Int,
+    private val token: String?
 ) : ViewModel() {
 
-    var trade by mutableStateOf<TradeDTO?>(null)
+    var trade by mutableStateOf<TradeInfoDTO?>(null)
         private set
-    var module by mutableStateOf<ModuleDTO?>(null)
+
+    var sender by mutableStateOf<UserInfoDTO?>(null)
         private set
-    var sender by mutableStateOf<UserDTO?>(null)
-        private set
-    var receiver by mutableStateOf<UserDTO?>(null)
+    var receiver by mutableStateOf<UserInfoDTO?>(null)
         private set
 
     var isLoading by mutableStateOf(true)
@@ -47,11 +47,11 @@ class TradeViewModel(
                 isLoading = true
                 errorMessage = null
 
-                trade = tradeService.getTradeById(tradeId)
-                val locker = lockerService.getLockerById(trade!!.lockerId)
-                module = moduleService.getModule(locker.module)
-                sender = userService.getUserById(trade!!.senderId)
-                receiver = userService.getUserById(trade!!.receiverId)
+                val bearerToken = "Bearer ${token}"
+                trade = tradeService.getTrade(tradeId, bearerToken )
+
+                sender = userService.getUserInfo(trade!!.senderId, bearerToken)
+                receiver = userService.getUserInfo(trade!!.receiverId, bearerToken)
 
             } catch (e: Exception) {
                 errorMessage = e.message ?: "Error on trades request"

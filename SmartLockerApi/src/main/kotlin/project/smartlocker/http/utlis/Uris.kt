@@ -6,52 +6,72 @@ package project.smartlocker.http.utlis
 
 object Uris {
 
-    const val HOME = "/api"
+    const val API = "/api"
 
     object Users {
         // admin
-        const val GET_ALL_USERS = "/admin/users"
-        const val GET_ALL_USERS_STATUS = "/admin/users/status"
-        const val DELETE = "/admin/user/{id}"
-
-        //
-        const val VALIDATE_USER = "/user/{id}/status"
-        const val GET_BY_USERNAME = "/user/{username}"
-        const val GET_BY_ID = "/users/{id}"
+        const val GET_ALL_USERS = "/admin/users"                        //*
+        const val GET_ALL_USERS_STATUS = "/admin/users/status"          //??
+        const val DELETE = "/admin/user/{id}"                           //*
+        const val EDIT_ROLE = "/admin/user/{id}"                        //*
 
         // global
-        const val UPDATE_USER = "/user/{id}"
-        const val CREATE_USER = "/user"
+        const val EDIT_STATUS = "/user/status/{userId}"                 //* mal
 
-        const val LOGIN = "/auth/login"             //
-        const val LOGOUT = "/auth/logout"           //
+        // app
+        const val LOGIN = "/login"                                      //login
+        const val LOGOUT = "/logout"                                    //logout
+        const val REGISTER = "/signup"                                  //signup
+
+        const val PROFILE = "/profile"                                  //getProfile
+        const val EDIT_USER = "/profile"                                //editUser
+        const val USER_INFO = "/user/{id}"                              //getUserInfo
+
+        //
+        const val GET_BY_USERNAME = "/user/{username}"                  //getByUsername
+        const val GET_BY_ID = "/users/{id}"                             //getUser
     }
 
     object Friends{
-        //admin
-        const val GET_FRIEND = "/admin/user/{id}/friend/{friendId}"
-        const val GET_FRIENDS ="/admin/user/{id}/friends"
+        // admin
+        const val GET_FRIEND = "/admin/user/{id}/friend/{friendId}"     //*
+        const val GET_FRIENDS ="/admin/user/{id}/friends"               //*
 
-        //global
-        const val GET_FRIENDS_INFO = "/user/{id}/friends"
-        const val ADD_FRIEND = "/user/{id}/friend"
-        const val UPDATE_FRIEND = "/user/{id}/friend/{friendId}"
-        const val DELETE_FRIEND = "/user/{id}/friend/{friendId}"
+        /*
+        // global
+        const val GET_FRIENDS_INFO = "/user/{id}/friends"               //getFriends
+        const val CREATE_FRIEND = "/user/{id}/friend"                   //addFriend
+        const val UPDATE_FRIEND = "/user/{id}/friend/{friendId}"        //editFriend
+        const val DELETE_FRIEND = "/user/{id}/friend/{friendId}"        //deleteFriend
+
+
+         */
+
+        // app
+        const val GET_USER_FRIENDS = "/friends"                         //getFriendsList
+        const val ADD_FRIEND = "/friend"                                //addFriend
+        const val EDIT_FRIEND = "/friend/{friendId}"                    //editFriend
+        const val REMOVE_FRIEND = "/friend/{friendId}"                  //removeFriend
     }
 
     object Module{
         //admin
-        const val GET_ALL_MODULES = "/admin/modules"
-        const val GET_ALL_MODULES_STATUS = "/admin/modules/status"
-        const val CREATE_MODULE = "/admin/module"
-        const val UPDATE_MODULE = "/admin/module/{id}"
-        const val DELETE_MODULE = "/admin/module/{id}"
+        const val GET_ALL_MODULES = "/admin/modules"                    //*
+        const val GET_ALL_MODULES_STATUS = "/admin/modules/status"      //?
+        const val CREATE_MODULE = "/admin/module"                       //*
+        const val UPDATE_MODULE = "/admin/module/{id}"                  //*
+        const val DELETE_MODULE = "/admin/module/{id}"                  //*
 
         //
-        const val GET_MODULE_BY_ID = "/module/{id}"
+        const val GET_MODULE_BY_ID = "/module/{id}"                     //*
 
+        /*
         //global
-        const val GET_MODULE_GEO = "/geo/{latitude}/{longitude}"
+        const val GET_MODULE_GEO = "/geo/{latitude}/{longitude}"        //getMap
+         */
+
+        // app
+        const val GET_MAP = "/map"                                      //getMap
     }
 
     object Locker {
@@ -70,6 +90,9 @@ object Uris {
     object Hash{
         const val GET_HASH = "/hash/{hash}"
         const val CREATE_HASH = "/hash"
+
+        //app
+        const val SCAN = "/scan/{hash}"
     }
 
     object Trade {
@@ -79,10 +102,17 @@ object Uris {
         const val DELETE_TRADE = "/admin/trade/{id}"
 
         //global
-        const val GET_TRADE_BY_ID = "/trade/{id}"
-        const val GET_PENDING_TRADE = "/trade/pending/{locker}"
-        const val CREATE_TRADE = "/trade"
-        const val UPDATE_TRADE = "/trade/{id}"
+        //const val GET_TRADE_BY_ID = "/trade/{id}"                     //getTradeInfo
+        const val GET_PENDING_TRADE = "/trade/pending/{locker}"         //getPending
+        //const val CREATE_TRADE = "/trade"                             //createTrade
+        //const val UPDATE_TRADE = "/trade/{id}"                        //confirmTrade
+
+        // app
+        const val GET_TRADE = "/trade/{tradeId}"                        //getTradeInfo
+        const val LOCKER_TRADE = "/trade/locker/{lockerId}"             //getLockerTrade
+        const val NEW_TRADE = "/trade"                                  //newTrade
+        const val EDIT_TRADE = "/trade/{tradeId}"                       //editTrade
+        const val WITHDRAW = "/withdraw/{lockerId}"                     //confirmTrade
     }
 
     object History {
@@ -90,8 +120,13 @@ object Uris {
         const val GET_BY_LOCKER = "/locker/{id}/history"
 
         //global
-        const val USER_HISTORY = "/user/{id}/history"
-        const val GET_BY_RECEIVER = "/receiver/{id}"
-        const val GET_BY_SENDER = "/sender/{id}"
+        const val USER_HISTORY = "/user/{id}/history"                   //getFullHistory
+        const val GET_BY_RECEIVER = "/receiver/{id}"                    //getReceiverHistory
+        const val GET_BY_SENDER = "/sender/{id}"                        //getSenderHistory
+
+        // app
+        const val USER_FULL_HISTORY = "/history"                        // getFullHistory
+        const val SENDER_HISTORY = "/user/sent"                         // getSenderHistory
+        const val RECEIVER_HISTORY = "/user/received"                   // getReceiverHistory
     }
 }

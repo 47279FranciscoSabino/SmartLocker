@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val userService: UserService,
-    private val userId: Int
+    private val token: String?
 ) : ViewModel() {
 
     var user by mutableStateOf<UserDTO?>(null)
@@ -33,8 +33,8 @@ class SettingsViewModel(
             try {
                 isLoading = true
                 errorMessage = null
-
-                user = userService.getUserById(userId)
+                val bearerToken = "Bearer ${token}"
+                user = userService.getProfile(bearerToken)
 
             } catch (e: Exception) {
                 errorMessage = e.message ?: "Failed to load user"
@@ -45,6 +45,7 @@ class SettingsViewModel(
     }
 
     fun updateUser(
+        token: String?,
         email: String?,
         password: String?
     ) {
@@ -53,12 +54,14 @@ class SettingsViewModel(
                 isLoading = true
                 errorMessage = null
                 if(user!=null){
+                    val bearerToken = "Bearer ${token}"
+
                     val request = UpdateUserRequest(
                         email = email,
                         password = password
                     )
 
-                    userService.updateUser(userId, request)
+                    userService.updateProfile(request, bearerToken)
                     loadUser()
                 }
 

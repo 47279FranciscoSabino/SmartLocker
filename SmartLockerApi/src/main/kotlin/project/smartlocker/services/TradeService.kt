@@ -1,5 +1,6 @@
 package project.smartlocker.services
 
+import TradeInfoDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.trade.*
@@ -35,10 +36,12 @@ class TradeService(
     fun getPendingTrade(locker: Int): TradeDTO? {
         return tradeRepository.getPendingTrade(locker)
     }
-
+/*
     fun createTrade(new: CreateTradeRequest) {
         tradeRepository.createTrade(new.senderId, new.receiverId, new.lockerId)
     }
+
+ */
 
     fun updateTrade(id:Int, input: UpdateTradeRequest){
         val trade = tradeRepository.getTradeById(id)?: throw Exception("User not found")
@@ -46,7 +49,46 @@ class TradeService(
         val read = input.read ?: trade.read
         val status = input.status ?: trade.status
 
-        lockerRepository.updateLockerInfo(trade.lockerId, false)
+        lockerRepository.updateLockerInfo(trade.lockerId, "AVAILABLE")
         tradeRepository.updateTradeStatus(id, read, status)
     }
+
+    // app
+    fun getTrade(user: Int, id: Int): TradeInfoDTO {
+        val trade = tradeRepository.getTrade(id) ?: throw Exception("Trade not found")
+
+        if (user != trade.senderId && user != trade.receiverId) {
+            throw Exception("You do not have access to this trade")
+        }
+
+        return trade
+    }
+
+    fun getLockerTrade(lockerId: Int): TradeDTO {
+        return tradeRepository.getPendingTrade(lockerId)
+            ?: throw Exception("No pending trade for locker $lockerId")
+    }
+
+    fun newTrade(user: Int, input: CreateTradeRequest) {
+        if (lockerRepository.getLockerById(input.lockerId)== null) {
+            throw Exception("Locker not found")
+        }
+        tradeRepository.createTrade(user, input.receiverId, input.lockerId)
+    }
+
+    fun editTrade(user: Int, id: Int, input: UpdateTradeRequest) {
+        val trade = tradeRepository.getTradeById(id) ?: throw Exception("Trade not found")
+
+        if (user != trade.senderId && user != trade.receiverId) {
+            throw Exception("Only the sender or receiver can edit the trade")
+        }
+
+        val read = input.read ?: trade.read
+        val status = input.status ?: trade.status
+        if(!read){   //package withdraw
+            lockerRepository.updateLockerInfo(trade.lockerId, "AVAILABLE")
+        }
+        tradeRepository.updateTradeStatus(id, read, status)
+    }
+
 }
