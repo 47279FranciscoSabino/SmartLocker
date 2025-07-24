@@ -1,6 +1,6 @@
 <resources>
     <!-- Home Page Screen -->
-    <string name="app_name">SmartLocker</string>
+    <string name="app_name">Smart Locker</string>
     <string name="login_button">Login/Sign up</string>
 
     <!-- Login popup -->

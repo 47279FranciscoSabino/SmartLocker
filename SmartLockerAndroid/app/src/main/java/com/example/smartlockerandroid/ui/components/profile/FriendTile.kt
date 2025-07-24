@@ -25,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smartlockerandroid.R
 
 
 @Composable
@@ -61,7 +63,7 @@ fun FriendTile(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = name, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
-                Text(text = "Friends for: ${days.toString()}", fontWeight = FontWeight.Bold, color = Color.DarkGray)
+                Text(text = stringResource(R.string.friends_for)+days.toString(), fontWeight = FontWeight.Bold, color = Color.DarkGray)
             }
             Icon(
                 imageVector = if (expanded.value) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight,
@@ -76,7 +78,7 @@ fun FriendTile(
                 HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
 
                 Text(
-                    text = "Block",
+                    text = stringResource(R.string.block),
                     color = Color.Red,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -85,7 +87,7 @@ fun FriendTile(
                 )
 
                 Text(
-                    text = "Unfriend",
+                    text = stringResource(R.string.unfriend),
                     color = Color.Red,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,12 +109,12 @@ fun FriendTile(
                     showBlockDialog.value = false
                     onBlock()
                 }) {
-                    Text("Block", color = Color.Red)
+                    Text(stringResource(R.string.block), color = Color.Red)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showBlockDialog.value = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             title = { Text("Confirm Block") },
@@ -129,12 +131,12 @@ fun FriendTile(
                     showUnfriendDialog.value = false
                     onUnfriend()
                 }) {
-                    Text("Unfriend", color = Color.Red)
+                    Text(stringResource(R.string.unfriend), color = Color.Red)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showUnfriendDialog.value = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             title = { Text("Confirm Unfriend") },

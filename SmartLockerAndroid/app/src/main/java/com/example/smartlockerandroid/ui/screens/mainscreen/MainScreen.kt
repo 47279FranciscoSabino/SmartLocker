@@ -17,7 +17,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.ModuleService
@@ -50,7 +52,7 @@ fun MainScreen(
     val received = myTradesViewModel.pendingTrades
 
 
-    val tabs = listOf("New Trade", "My Trades")
+    val tabs = listOf(stringResource(R.string.new_trade), stringResource(R.string.my_trades))
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = { 2 }

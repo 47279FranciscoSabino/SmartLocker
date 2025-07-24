@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -135,7 +136,7 @@ fun ProfileScreen(
                                     .background(Color(0xFFF0F0F0), shape = RoundedCornerShape(8.dp))
                                     .padding(12.dp)
                             ) {
-                                Text("Requests (${pending.size})", fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.requests)+" "+pending.size, fontWeight = FontWeight.Bold)
                             }
                         }
                         Box(
@@ -168,7 +169,7 @@ fun ProfileScreen(
                             ) {
                                 LazyColumn {
                                     item {
-                                        Text("Pending Requests", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                                        Text(stringResource(R.string.pending_requests), fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                         Spacer(Modifier.height(8.dp))
                                     }
 
@@ -195,7 +196,7 @@ fun ProfileScreen(
                                         TextButton(
                                             onClick = { showPending.value = false }
                                         ) {
-                                            Text("Close")
+                                            Text(stringResource(R.string.close))
                                         }
                                     }
                                 }
@@ -228,7 +229,7 @@ fun ProfileScreen(
                                 }
                             }
                         } else {
-                            Text("You dont have any friends );")
+                            Text(stringResource(R.string.no_friends))
                         }
                     }
 
@@ -237,7 +238,7 @@ fun ProfileScreen(
                             onSettingsClick(user)
                         }
                     }) {
-                        Text(text = "settings", color = Color.Gray)
+                        Text(text = stringResource(R.string.settings), color = Color.Gray)
                     }
                     TextButton(
                         onClick ={
@@ -246,7 +247,7 @@ fun ProfileScreen(
                             profileViewModel.onLogout()
                             onLogoutClick()
                         } ) {
-                        Text(text = "log out", color = Color.Red)
+                        Text(text = stringResource(R.string.logout), color = Color.Red)
                     }
                 }
             }

@@ -16,8 +16,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.data.model.user.output.UserDTO
 import com.example.smartlockerandroid.viewmodel.ProfileViewModel
 
@@ -32,13 +34,13 @@ fun SearchFriendDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Search for a user") },
+        title = { Text(stringResource(R.string.search_for_user)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = viewModel.searchQuery,
                     onValueChange = { viewModel.onSearchQueryChanged(it) },
-                    label = { Text("Username") },
+                    label = { Text(stringResource(R.string.username)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -82,7 +84,7 @@ fun SearchFriendDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Close")
+                Text(stringResource(R.string.close))
             }
         }
     )

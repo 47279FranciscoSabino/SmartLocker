@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,11 +28,10 @@ import androidx.compose.ui.window.Dialog
 import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.data.service.UserService
 import com.example.smartlockerandroid.ui.components.LogInButton
-import com.example.smartlockerandroid.ui.components.TopBar
 import com.example.smartlockerandroid.ui.theme.MyBlue2
+
 @Composable
 fun HomePageScreen(
-    onInfoRequest: (() -> Unit)? = null,
     onClickLogIn: () -> Unit = {},
     userService: UserService
 ) {
@@ -45,7 +44,7 @@ fun HomePageScreen(
             .fillMaxSize()
     ) {
         Text(
-            text = "Smart Locker",
+            text = stringResource(R.string.app_name),
             fontStyle = FontStyle.Italic,
             fontSize = 55.sp,
             fontWeight = FontWeight.Bold,

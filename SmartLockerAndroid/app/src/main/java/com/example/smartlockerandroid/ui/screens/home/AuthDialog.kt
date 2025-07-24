@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.model.user.input.CreateUserRequest
 import com.example.smartlockerandroid.data.model.user.input.LoginRequest
@@ -96,7 +98,7 @@ fun AuthScreen(
             }
             else -> {
                 Text(
-                    text = if (isLogin.value) "Login" else "Sign Up",
+                    text = if (isLogin.value) stringResource(R.string.login) else stringResource(R.string.signup),
                     style = MaterialTheme.typography.titleLarge
                 )
 
@@ -106,7 +108,7 @@ fun AuthScreen(
                     OutlinedTextField(
                         value = username.value,
                         onValueChange = { username.value = it },
-                        label = { Text("Username") },
+                        label = { Text(stringResource(R.string.username)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -117,7 +119,7 @@ fun AuthScreen(
                 OutlinedTextField(
                     value = email.value,
                     onValueChange = { email.value = it },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.email)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth()
@@ -128,7 +130,7 @@ fun AuthScreen(
                 OutlinedTextField(
                     value = password.value,
                     onValueChange = { password.value = it },
-                    label = { Text("Password") },
+                    label = { Text( stringResource(R.string.password)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
@@ -147,19 +149,19 @@ fun AuthScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(if (isLogin.value) "Login" else "Sign Up")
+                    Text(if (isLogin.value) stringResource(R.string.login) else stringResource(R.string.signup))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextButton(onClick = { isLogin.value = !isLogin.value }) {
-                    Text(if (isLogin.value) "Don't have an account? Sign Up" else "Already have an account? Login")
+                    Text(if (isLogin.value) stringResource(R.string.swap_signup) else stringResource(R.string.swap_login))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         }

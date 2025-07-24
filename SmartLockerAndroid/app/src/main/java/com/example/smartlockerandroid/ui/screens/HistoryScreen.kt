@@ -14,9 +14,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.HistoryService
 import com.example.smartlockerandroid.data.service.LockerService
@@ -70,7 +72,6 @@ fun HistoryScreen(
                         Box(modifier = Modifier.padding(1.dp)) {
                             Column {
                                 pastTrades.forEach { trade ->
-                                    Log.i("REDS", trade.toString())
                                     HistoryTile(
                                         location =  trade.location,
                                         date = trade.startDate,
@@ -80,7 +81,7 @@ fun HistoryScreen(
                             }
                         }
                     } else {
-                        Text("Your history is clear")
+                        Text(stringResource(R.string.no_history))
                     }
                 }
             }

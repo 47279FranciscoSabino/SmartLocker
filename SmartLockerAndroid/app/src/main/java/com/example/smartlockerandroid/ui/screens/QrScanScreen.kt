@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.FriendsService
 import com.example.smartlockerandroid.data.service.ScanService
@@ -137,7 +139,7 @@ fun QrScanScreen(
                             }
                         }
                     } else {
-                        Text("You dont have any friends );")
+                        Text(stringResource(R.string.no_friends))
                     }
                 }
             }
@@ -156,22 +158,22 @@ fun QrScanScreen(
 
                     locker != null -> {
                         if (locker.status != "AVAILABLE") {
-                            Text("Locker ocupado. Confirmar levantamento?")
+                            Text(stringResource(R.string.withdraw_trade_msg))
                             Spacer(Modifier.height(16.dp))
                             Button(onClick = {
                                 isPickup.value = true
                                 showConfirmDialog.value = true
                             }) {
-                                Text("Confirmar levantamento")
+                                Text(stringResource(R.string.start_withdraw))
                             }
                         } else {
-                            Text("Locker livre. Criar nova troca?")
+                            Text(stringResource(R.string.start_trade_msg))
                             Spacer(Modifier.height(16.dp))
                             Button(onClick = {
                                 isPickup.value = false
                                 showConfirmDialog.value = true
                             }) {
-                                Text("Criar troca")
+                                Text(stringResource(R.string.start_trade))
                             }
                         }
                     }
@@ -184,18 +186,14 @@ fun QrScanScreen(
                 onDismissRequest = { showConfirmDialog.value = false },
                 title = {
                     Text(
-                        if (isPickup.value)
-                            "Confirmar levantamento"
-                        else
-                            "Confirmar criação de troca"
+                        if (isPickup.value) stringResource(R.string.confirm_withdraw)
+                        else stringResource(R.string.confirm_new_trade)
                     )
                 },
                 text = {
                     Text(
-                        if (isPickup.value)
-                            "Tem a certeza que pretende levantar o item do locker?"
-                        else
-                            "Deseja criar uma nova troca neste locker?"
+                        if (isPickup.value) stringResource(R.string.confirm_withdraw_msg)
+                        else stringResource(R.string.confirm_new_trade_msg)
                     )
                 },
                 confirmButton = {
@@ -209,14 +207,14 @@ fun QrScanScreen(
                             showFriendsList.value = true
                         }
                     }) {
-                        Text("Confirmar")
+                        Text(stringResource(R.string.confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = {
                         showConfirmDialog.value = false
                     }) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )

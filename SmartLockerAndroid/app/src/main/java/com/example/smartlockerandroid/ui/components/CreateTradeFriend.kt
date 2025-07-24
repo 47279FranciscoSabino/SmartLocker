@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.data.model.trade.input.CreateTradeRequest
 
 @Composable
@@ -42,7 +44,7 @@ fun CreateTradeFriend(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = name, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp)
-                Text(text = "Friends for: ${days.toString()}", fontWeight = FontWeight.Bold, color = Color.DarkGray)
+                Text(text = stringResource(R.string.friends_for)+" "+days.toString(), fontWeight = FontWeight.Bold, color = Color.DarkGray)
             }
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,

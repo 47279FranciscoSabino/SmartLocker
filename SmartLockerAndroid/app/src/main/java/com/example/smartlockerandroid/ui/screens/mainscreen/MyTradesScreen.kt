@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.ui.components.history.HistoryButton
 import com.example.smartlockerandroid.ui.components.trade.TradeTile
 import com.example.smartlockerandroid.ui.theme.MyBlue
@@ -39,8 +41,6 @@ fun MyTradesScreen(
         viewModel.loadReceive()
         viewModel.loadSend()
         viewModel.updateTrade()
-
-        Log.i("we", received.toString())
     }
 
     Column(
@@ -59,7 +59,7 @@ fun MyTradesScreen(
             }
             else -> {
                 if (received.isNotEmpty()) {
-                    Text("To Pick Up")
+                    Text(stringResource(R.string.pick_up))
                     Column(Modifier.padding(10.dp).weight(3f)) {
                         received.forEach { trade ->
                             Box(modifier = Modifier.background(MyBlue)){
@@ -74,13 +74,13 @@ fun MyTradesScreen(
                         }
                     }
                 } else {
-                    Text("No trades to withdraw")
+                    Text(stringResource(R.string.no_trades))
                 }
 
                 Spacer(modifier = Modifier.height(50.dp))
 
                 if (sent.isNotEmpty()) {
-                    Text("Drop")
+                    Text(stringResource(R.string.drop))
                     Column(Modifier.padding(10.dp).weight(3f)) {
                         sent.forEach { trade ->
                             Box(modifier = Modifier.background(MyBlue2)){

@@ -20,9 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.UserService
 import com.example.smartlockerandroid.ui.components.TopBar
@@ -81,14 +83,14 @@ fun SettingsScreen(
 
                 else -> {
                     if(user != null){
-                        Text("Edit Profile", style = MaterialTheme.typography.titleLarge)
+                        Text(stringResource(R.string.edit_profile), style = MaterialTheme.typography.titleLarge)
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         OutlinedTextField(
                             value = email.value,
                             onValueChange = { email.value = it },
-                            label = { Text("Email") },
+                            label = { Text(stringResource(R.string.email)) },
                             singleLine = true,
                             //keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
                         )
@@ -98,7 +100,7 @@ fun SettingsScreen(
                         OutlinedTextField(
                             value = newPassword.value,
                             onValueChange = { newPassword.value = it },
-                            label = { Text("New Password") },
+                            label = { Text(stringResource(R.string.confirm_new_trade)) },
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -106,7 +108,7 @@ fun SettingsScreen(
                         OutlinedTextField(
                             value = confirmPassword.value,
                             onValueChange = { confirmPassword.value = it },
-                            label = { Text("Confirm New Password") },
+                            label = { Text(stringResource(R.string.confirm_pass)) },
                             visualTransformation = PasswordVisualTransformation(),
                             modifier = Modifier.fillMaxWidth()
                         )

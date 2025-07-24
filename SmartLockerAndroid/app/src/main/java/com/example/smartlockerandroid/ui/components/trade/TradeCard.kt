@@ -14,11 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.data.model.trade.output.TradeInfoDTO
 
 @Composable
@@ -53,25 +55,25 @@ fun TradeCard(trade: TradeInfoDTO, sender:String, receiver:String){
                 fontSize = 28.sp
             )
             Text(
-                text = ("From: $sender"),
+                text = (stringResource(R.string.from)+sender),
                 color = Color.Gray,
                 fontSize = 22.sp
             )
             Text(
-                text = ("To: $receiver"),
+                text = (stringResource(R.string.to)+receiver),
                 color = Color.Gray,
                 fontSize = 22.sp
             )
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = ("Started: ${trade.startDate}"),
+                text = (stringResource(R.string.started)+trade.startDate),
                 color = Color.Gray,
                 fontSize = 20.sp
             )
             if(trade.status!= "PENDING"){
                 Text(
-                    text = ("Ended: ${trade.endDate}"),
+                    text = (stringResource(R.string.ended)+trade.endDate),
                     color = Color.Gray,
                     fontSize = 20.sp
                 )
