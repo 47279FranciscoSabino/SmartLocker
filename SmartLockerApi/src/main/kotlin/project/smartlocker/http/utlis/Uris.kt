@@ -28,7 +28,7 @@ object Uris {
         const val USER_INFO = "/user/{id}"                              //getUserInfo
 
         //
-        const val GET_BY_USERNAME = "/user/{username}"                  //getByUsername
+        const val GET_BY_USERNAME = "/user"                             //getByUsername
         const val GET_BY_ID = "/users/{id}"                             //getUser
     }
 
