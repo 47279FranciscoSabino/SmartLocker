@@ -95,33 +95,6 @@ interface ModuleRepository {
         @Bind("module_id") id: Int
     )
 
-    // global
-    @SqlQuery(
-        """
-        SELECT 
-            m.*,
-            ms.module_status,
-            COUNT(ls.*) FILTER (WHERE ls.locker_status = 'AVAILABLE') AS available_lockers
-        FROM module m 
-        INNER JOIN module_status ms ON ms.module = m.module_id
-        INNER JOIN locker l ON l.locker_module = m.module_id
-        INNER JOIN locker_status ls ON ls.locker = l.locker_id
-        WHERE l.locker_active = TRUE
-        AND ST_DWithin(
-            m.module_location::geography,
-            ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
-            :radius
-        )
-        GROUP BY 
-            m.module_id, m.module_location, m.module_n, m.module_location_name, ms.module_status;
-        """
-    )
-    fun getModulesByRadius(
-        @Bind("longitude") longitude: Double,
-        @Bind("latitude") latitude: Double,
-        @Bind("radius") radius: Double
-    ): List<ModuleDTO>
-
 // ------------------------------------------------------------------------------------
     // app
     @SqlQuery(

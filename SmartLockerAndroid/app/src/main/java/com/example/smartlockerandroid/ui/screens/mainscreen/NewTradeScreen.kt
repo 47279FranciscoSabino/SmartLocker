@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.ModuleService
 import com.example.smartlockerandroid.ui.components.main.MapBox
 import com.example.smartlockerandroid.ui.components.main.NewTradeButton
@@ -35,6 +34,7 @@ import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import org.osmdroid.util.GeoPoint
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun NewTradeScreen(

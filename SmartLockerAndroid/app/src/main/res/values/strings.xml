@@ -1,9 +1,36 @@
 <resources>
+    <!-- Home Page Screen -->
     <string name="app_name">SmartLocker</string>
     <string name="login_button">Login/Sign up</string>
 
+    <!-- Login popup -->
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="swap_signup">Dont have an account? Sign Up</string>
+
+    <!-- Signup popup -->
+    <string name="signup">Sign Up</string>
+    <string name="username">Username</string>
+    <string name="swap_login">Already have an account? Login</string>
+
+    <string name="cancel">Cancel</string>
+
+    <!-- Main Screen -->
     <string name="new_trade">New Trade</string>
     <string name="new_button">New</string>
+
+    <string name="start_trade_msg">Locker available. Start new trade?</string>
+    <string name="start_trade">Start trade</string>
+    <string name="confirm_new_trade">Confirm new trade</string>
+    <string name="confirm_new_trade_msg">Do you want to start a new trade in this locker?</string>
+
+    <string name="withdraw_trade_msg">Locker occupied. Confirm withdraw?</string>
+    <string name="start_withdraw">Start withdraw</string>
+    <string name="confirm_withdraw">Confirm withdraw</string>
+    <string name="confirm_withdraw_msg">Are you sure you want to withdraw the item from the locker?</string>
+
+    <string name="confirm">Confirm</string>
 
     <string name="my_trades">My Trades</string>
     <string name="pick_up">To Pick Up</string>
@@ -11,11 +38,32 @@
     <string name="no_trades">No trades to withdraw</string>
 
     <string name="history_button">Past trades</string>
+
+    <!-- History Screen -->
     <string name="no_history">Your history is clear </string>
 
-    <string name="From">From: </string>
-    <string name="To">To: </string>
-    <string name="Stãrted">Started: </string>
-    <string name="Ended">Ended: </string>
+    <!-- Trade popup -->
+    <string name="from">From: </string>
+    <string name="to">To: </string>
+    <string name="started">Started: </string>
+    <string name="ended">Ended: </string>
 
+    <!-- Profile -->
+    <string name="requests">Requests</string>
+    <string name="pending_requests">Pending Requests</string>
+    <string name="close">Close</string>
+    <string name="search_for_user">Search for a user</string>
+    <string name="friends_for">Friends for:</string>
+    <string name="no_friends">You dont have any friends );</string>
+    <string name="block">Block</string>
+    <string name="unfriend">Unfriend</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+
+
+    <!-- Settings -->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="new_pass">New Password</string>
+    <string name="confirm_pass">Confirm New Password</string>
+    <string name="save">Save Changes</string>
 </resources>

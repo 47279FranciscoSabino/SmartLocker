@@ -2,9 +2,6 @@ package project.smartlocker.services
 
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.locker.LockerStatus
-import project.smartlocker.http.models.hash.input.CreateHashRequest
-import project.smartlocker.http.models.locker.input.CreateLockerRequest
-import project.smartlocker.http.models.locker.input.UpdateLockerRequest
 import project.smartlocker.http.models.locker.output.LockerDTO
 import project.smartlocker.repository.LockerRepository
 import java.util.*
@@ -31,23 +28,22 @@ class LockerService(
         return lockerRepository.getLockerByHash(hash)
     }
 
-    fun createLocker(new: CreateLockerRequest){
-        val hash = UUID.randomUUID().toString().replace("-", "")
-        lockerRepository.createLocker(new.module, hash, new.active)
-        val input = CreateHashRequest(hash)
-        hashService.createQrCode(input)
+    fun createLocker(module: Int, hash: String, active: Boolean){
+        val newHash = UUID.randomUUID().toString().replace("-", "")
+        lockerRepository.createLocker(module, newHash, active)
+        hashService.createQrCode(newHash)
     }
 
-    fun updateLocker(id: Int, input: UpdateLockerRequest) {
+    fun updateLocker(id: Int, module: Int? = null, hash: String? = null, active: Boolean? = null, status: String? = null){
         val locker = lockerRepository.getLockerById(id)?: throw Exception("User not found")
 
-        val module = input.module ?: locker.module
-        val hash = input.hash ?: locker.hash
-        val active = input.active ?: locker.active
-        val status = input.status ?: locker.status
+        val newModule = module ?: locker.module
+        val newHash = hash ?: locker.hash
+        val newActive = active ?: locker.active
+        val newStatus = status ?: locker.status
 
-        val lockerId = lockerRepository.updateLocker(id, module, hash, active)
-        lockerRepository.updateLockerStatus(lockerId, status)
+        val lockerId = lockerRepository.updateLocker(id, newModule, newHash, newActive)
+        lockerRepository.updateLockerStatus(lockerId, newStatus)
     }
 
     fun deleteLocker(id: Int) {

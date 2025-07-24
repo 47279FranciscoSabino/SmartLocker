@@ -22,7 +22,7 @@ interface TradeService {
     suspend fun createTrade(@Body input: CreateTradeRequest)
 
     @PUT("trade/{id}")
-    suspend fun updateTrade(@Path("id") id: Int, @Body input: UpdateTradeRequest)
+    suspend fun updateTrade(@Path("id") id: Int, @Body input: UpdateTradeRequest, @Header("Authorization") token: String)
 
 
 

@@ -1,11 +1,10 @@
 package project.smartlocker.services
 
+import org.springframework.security.crypto.password.PasswordEncoder
 import project.smartlocker.http.models.user.output.UserInfoDTO
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.user.RoleEnum
-import project.smartlocker.domain.user.User
 import project.smartlocker.domain.user.UserEnum
-import project.smartlocker.http.models.user.input.*
 import project.smartlocker.http.models.user.output.AdminUserDTO
 import project.smartlocker.http.models.user.output.AdminUserStatusDTO
 import project.smartlocker.http.models.user.output.TokenDTO
@@ -15,6 +14,7 @@ import java.util.*
 
 @Service
 class UserService(
+    private val passwordEncoder: PasswordEncoder,
     private val userRepository: UserRepository
 ) {
     // admin
@@ -35,14 +35,14 @@ class UserService(
         }
     }
 
-    fun editRole(id: Int, update: UpdateUserRoleRequest){
+    fun editRole(id: Int, role: String){
         userRepository.getUserById(id) ?: throw Exception("User not found")
-        val role = try {
-            RoleEnum.valueOf(update.role.uppercase())
+        val newRole = try {
+            RoleEnum.valueOf(role.uppercase())
         } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Invalid role: ${update.role}")
+            throw IllegalArgumentException("Invalid role: $role")
         }
-        userRepository.editRole(id, role.name)
+        userRepository.editRole(id, newRole.name)
     }
 
     // global
@@ -50,36 +50,38 @@ class UserService(
         return userRepository.getUserByUsername(name)
     }
 
-    fun editUserStatus(id: Int, input: UpdateUserStatusRequest){
+    fun editUserStatus(id: Int, status: String){
         val user = userRepository.getUserById(id) ?: throw Exception("User not found")
-        val status = try {
-            UserEnum.valueOf(input.status.uppercase())
+        val newStatus = try {
+            UserEnum.valueOf(status.uppercase())
         } catch (e: IllegalArgumentException) {
-            throw IllegalArgumentException("Invalid role: ${input.status}")
+            throw IllegalArgumentException("Invalid role: $status")
         }
 
         when (user.status) {
-            UserEnum.NOT_VERIFIED.toString() -> if (status != UserEnum.VERIFIED) {
+            UserEnum.NOT_VERIFIED.toString() -> if (newStatus != UserEnum.VERIFIED) {
                 throw IllegalArgumentException("Can only transition from NOT_VERIFIED to VERIFIED")
             }
-            UserEnum.VERIFIED.toString() -> if (status != UserEnum.SUSPENDED) {
+            UserEnum.VERIFIED.toString() -> if (newStatus != UserEnum.SUSPENDED) {
                 throw IllegalArgumentException("Can only transition from VERIFIED to SUSPENDED")
             }
-            UserEnum.SUSPENDED.toString() -> if (status != UserEnum.VERIFIED) {
+            UserEnum.SUSPENDED.toString() -> if (newStatus != UserEnum.VERIFIED) {
                 throw IllegalArgumentException("Can only transition from SUSPENDED to VERIFIED")
             }
         }
-        userRepository.editUserStatus(id, input.status)
+        userRepository.editUserStatus(id, status)
     }
 
 
 
 //--------------------------------------------------------------------------------------------------------
 
-    fun login(input: LoginRequest): TokenDTO {
-        val user = userRepository.getUserByEmail(input.email) ?: throw Exception("Invalid email or password")
+    fun login(email: String, password:String): TokenDTO {
+        val user = userRepository.getUserByEmail(email) ?: throw Exception("Invalid email or password")
 
-        if (input.password != user.password) {
+        val isValid = passwordEncoder.matches(password, user.password)
+
+        if (!isValid) {
             throw Exception("Invalid email or password")
         }
 
@@ -89,27 +91,28 @@ class UserService(
         return TokenDTO(newToken)
     }
 
-    fun logout(user: UserDTO) {
-         userRepository.deleteToken(user.id)
+    fun logout(userId: Int) {
+         userRepository.deleteToken(userId)
     }
 
-    fun createUser(input: CreateUserRequest) {
-        val user = userRepository.getUserByEmail(input.email)
+    fun createUser(username: String, email:String, password:String) {
+        val hashedPassword = passwordEncoder.encode(password)
+        val user = userRepository.getUserByEmail(email)
         if (user != null) {
             throw Exception("Email already registered")
         }
-        userRepository.createUser(input.username, input.email, input.password)
+        userRepository.createUser(username, email, hashedPassword)
     }
 
     fun getUserById(id: Int): UserDTO? {
         return userRepository.getUserById(id)
     }
 
-    fun updateUser(id: Int, input: UpdateUserRequest) {
+    fun updateUser(id: Int, email: String?, password: String?) {
         val user = userRepository.getUser(id) ?: throw Exception("User not found")
 
-        val newEmail = input.email ?: user.email
-        val newPassword = input.password ?: user.password
+        val newEmail = email ?: user.email
+        val newPassword = password ?: user.password
 
         userRepository.updateUser(id, newEmail, newPassword)
     }

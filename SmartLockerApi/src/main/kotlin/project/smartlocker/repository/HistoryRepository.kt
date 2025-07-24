@@ -1,9 +1,9 @@
 package project.smartlocker.repository
 
-import TradeInfoDTO
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.springframework.stereotype.Repository
+import project.smartlocker.http.models.trade.output.TradeInfoDTO
 
 @Repository
 interface HistoryRepository {

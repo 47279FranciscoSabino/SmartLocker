@@ -29,7 +29,6 @@ import com.example.smartlockerandroid.viewmodel.HistoryViewModel
 
 @Composable
 fun HistoryScreen(
-    onInfoRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null,
     onBackRequest: (() -> Unit)? = null,
     onClickRequest: (Int) -> Unit = {},
@@ -50,7 +49,6 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopBar(
-                onInfoRequest = onInfoRequest,
                 onProfileRequest = onProfileRequest,
                 onBackRequest = onBackRequest
             )

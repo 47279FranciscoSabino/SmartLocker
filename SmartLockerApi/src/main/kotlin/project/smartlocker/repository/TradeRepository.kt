@@ -1,6 +1,5 @@
 package project.smartlocker.repository
 
-import TradeInfoDTO
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -8,6 +7,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.springframework.stereotype.Repository
 import project.smartlocker.domain.trade.TradeStatus
 import project.smartlocker.http.models.trade.output.TradeDTO
+import project.smartlocker.http.models.trade.output.TradeInfoDTO
 
 
 @Repository
@@ -114,7 +114,6 @@ interface TradeRepository {
     )
 
 
-
     @SqlQuery(
         """
         SELECT
@@ -128,51 +127,6 @@ interface TradeRepository {
     )
     fun getTradesByLocker(
         @Bind ("trade_locker")locker: Int
-    ): List<TradeDTO>
-
-    @SqlQuery(
-        """
-        SELECT
-        t.*,
-        ts.trade_read,
-        ts.trade_status
-        FROM trade t
-        INNER JOIN trade_status ts ON ts.trade = t.trade_id
-        WHERE trade_receiver = :trade_receiver
-        """
-    )
-    fun getTradesByReceiver(
-        @Bind ("trade_receiver") receiver: Int
-    ): List<TradeDTO>
-
-    @SqlQuery(
-        """
-        SELECT
-        t.*,
-        ts.trade_read,
-        ts.trade_status
-        FROM trade t
-        INNER JOIN trade_status ts ON ts.trade = t.trade_id
-        WHERE trade_sender = :trade_sender
-        """
-    )
-    fun getTradesBySender(
-        @Bind("trade_sender") sender: Int
-    ): List<TradeDTO>
-
-    @SqlQuery(
-        """
-        SELECT
-        t.*,
-        ts.trade_read,
-        ts.trade_status
-        FROM trade t
-        INNER JOIN trade_status ts ON ts.trade = t.trade_id
-        WHERE trade_sender = :user OR trade_receiver = :user
-        """
-    )
-    fun getUserTrades(
-        @Bind("user") user: Int
     ): List<TradeDTO>
 
     @SqlQuery(

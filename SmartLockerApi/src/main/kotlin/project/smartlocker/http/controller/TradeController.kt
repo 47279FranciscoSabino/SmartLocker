@@ -1,15 +1,13 @@
 package project.smartlocker.http.controller
 
-import TradeInfoDTO
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import project.smartlocker.domain.trade.TradeStatus
-import project.smartlocker.domain.user.User
+import project.smartlocker.domain.user.RoleEnum
 import project.smartlocker.http.models.trade.input.CreateTradeRequest
 import project.smartlocker.http.models.trade.input.UpdateTradeRequest
-import project.smartlocker.http.models.trade.output.TradeDTO
 import project.smartlocker.http.models.user.output.UserDTO
 import project.smartlocker.http.utlis.Uris
 import project.smartlocker.services.TradeService
@@ -22,9 +20,20 @@ class TradeController(
 ){
     // admin
     @GetMapping(Uris.Trade.GET_ALL_TRADE)
-    fun getAllTrades(): ResponseEntity<List<TradeDTO>> {
+    fun getAllTrades(
+        request: HttpServletRequest
+    ): ResponseEntity<Any> {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
+
+        if (user.role != RoleEnum.ADMIN.toString()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
+        }
+
         val trades = tradeService.getAllTrades()
-        return ResponseEntity.ok(trades)
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(trades)
     }
 
     @GetMapping(Uris.Trade.GET_ALL_TRADE_STATUS)
@@ -34,9 +43,20 @@ class TradeController(
     }
 
     @DeleteMapping(Uris.Trade.DELETE_TRADE)
-    fun deleteTrade(@PathVariable id: Int): ResponseEntity<Void> {
+    fun deleteTrade(
+        @PathVariable id: Int,
+        request: HttpServletRequest
+    ): ResponseEntity<Any> {
+        val user = request.getAttribute("authenticatedUser") as? UserDTO
+            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized: Please log in to access this resource.")
+
+        if (user.role != RoleEnum.ADMIN.toString()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
+        }
         tradeService.deleteTrade(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body("Trade deleted successfully.")
     }
 
     //app
@@ -44,45 +64,44 @@ class TradeController(
     fun getTrade(
         request: HttpServletRequest,
         @PathVariable tradeId: Int
-    ): Any {
+    ): ResponseEntity<Any> {
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
         val trade = tradeService.getTrade(user.id, tradeId)
-        return trade.let {
-            ResponseEntity.ok(trade)
-        } ?: ResponseEntity.notFound()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(trade)
     }
 
     @GetMapping(Uris.Trade.LOCKER_TRADE)
     fun getLockerTrade(
         request: HttpServletRequest,
         @PathVariable lockerId: Int
-    ): Any {
-        val user = request.getAttribute("authenticatedUser") as? UserDTO
-            ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    ): ResponseEntity<Any> {
+        if (request.getAttribute("authenticatedUser") !is UserDTO)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
         val trade = tradeService.getLockerTrade(lockerId)
-        return trade.let {
-            ResponseEntity.ok(trade)
-        } ?: ResponseEntity.notFound()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(trade)
     }
 
     @PostMapping(Uris.Trade.NEW_TRADE)
     fun newTrade(
         request: HttpServletRequest,
         @RequestBody input: CreateTradeRequest
-    ): Any {
+    ): ResponseEntity<Any> {
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
         //hardwareController.newTrade("192.168.137.76", true, false, "open")
 
-        tradeService.newTrade(user.id, input)
+        tradeService.newTrade(user.id, input.receiverId, input.lockerId)
         return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Trade created successfully.")
     }
 
     @PutMapping(Uris.Trade.EDIT_TRADE)
@@ -90,22 +109,23 @@ class TradeController(
         request: HttpServletRequest,
         @PathVariable tradeId: Int,
         @RequestBody input: UpdateTradeRequest
-    ): Any {
+    ): ResponseEntity<Any> {
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
         //hardwareController.newTrade("192.168.137.76", false, true, "open")
 
-        tradeService.editTrade(user.id, tradeId, input)
-        return ResponseEntity.ok()
+        tradeService.editTrade(user.id, tradeId, input.read, input.status)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Trade status updated.")
     }
 
     @PutMapping(Uris.Trade.WITHDRAW)
     fun withdrawTrade(
         request: HttpServletRequest,
         @PathVariable lockerId: Int
-    ): Any {
+    ): ResponseEntity<Any> {
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
@@ -115,9 +135,9 @@ class TradeController(
         val trade = tradeService.getLockerTrade(lockerId)
         var status = "COMPLETED"
         if (user.id == trade.senderId) status = "CANCELLED"
-        val input = UpdateTradeRequest(false, status)
-        tradeService.editTrade(user.id, trade.id, input)
+        tradeService.editTrade(user.id, trade.id, false, status)
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Trade was withdrawn successfully.")
     }
 }

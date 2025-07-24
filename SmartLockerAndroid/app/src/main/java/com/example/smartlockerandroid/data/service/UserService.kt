@@ -13,13 +13,14 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface UserService {
     @GET("users/{id}")
     suspend fun getUserById(@Path("id") id: Int): UserDTO
 
-    @GET("user/{username}")
-    suspend fun getUserByUsername(@Path("username") username: String, @Header("Authorization") token: String): UserDTO
+    @GET("user")
+    suspend fun getUserByUsername(@Query("username") username: String, @Header("Authorization") token: String): UserDTO
 
     @POST("user")
     suspend fun createUser(@Body input: CreateUserRequest)

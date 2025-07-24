@@ -4,7 +4,6 @@ import com.example.smartlockerandroid.data.model.hash.output.QrScanDTO
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import org.springframework.stereotype.Service
-import project.smartlocker.http.models.hash.input.CreateHashRequest
 import project.smartlocker.repository.HashRepository
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
@@ -18,9 +17,9 @@ class HashService(
         return hashRepository.getHash(hash)
     }
 
-    fun createQrCode(input: CreateHashRequest){
+    fun createQrCode(hash: String){
         val writer = QRCodeWriter()
-        val bitMatrix = writer.encode(input.hash, BarcodeFormat.QR_CODE, 300, 300)
+        val bitMatrix = writer.encode(hash, BarcodeFormat.QR_CODE, 300, 300)
         val width = bitMatrix.width
         val height = bitMatrix.height
         val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
@@ -32,6 +31,6 @@ class HashService(
         }
         val baos = ByteArrayOutputStream()
         ImageIO.write(image, "png", baos)
-        hashRepository.insertHash(input.hash, baos.toByteArray())
+        hashRepository.insertHash(hash, baos.toByteArray())
     }
 }

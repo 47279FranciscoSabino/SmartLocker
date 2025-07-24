@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartlockerandroid.data.model.friends.input.CreateFriendRequest
 import com.example.smartlockerandroid.data.model.friends.output.FriendDTO
 import com.example.smartlockerandroid.data.model.friends.input.UpdateFriendRequest
+import com.example.smartlockerandroid.data.model.user.input.LoginRequest
 import com.example.smartlockerandroid.data.model.user.output.UserDTO
 import com.example.smartlockerandroid.data.service.FriendsService
 import com.example.smartlockerandroid.data.service.UserService
@@ -51,6 +53,22 @@ class ProfileViewModel(
         }
     }
 
+    fun onLogout() {
+        viewModelScope.launch {
+            try {
+                isLoading = true
+                errorMessage = null
+
+                val bearerToken = "Bearer ${token}"
+                userService.logout(bearerToken)
+            } catch (e: Exception) {
+                errorMessage = "Login failed: ${e.localizedMessage}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     var searchedUser by mutableStateOf<UserDTO?>(null)
         private set
 
@@ -79,14 +97,14 @@ class ProfileViewModel(
         }
     }
 
-    fun sendFriendRequest(friend: UserDTO) {
+    fun sendFriendRequest(input: CreateFriendRequest) {
         viewModelScope.launch {
             try{
                 isLoading = true
                 errorMessage = null
 
                 val bearerToken = "Bearer ${token}"
-                friendsService.addFriend(friend.id, bearerToken)
+                friendsService.addFriend(input, bearerToken)
             } catch (e: Exception){
                 errorMessage = e.message?: "Error: user not found"
             } finally {

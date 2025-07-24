@@ -28,7 +28,6 @@ import com.example.smartlockerandroid.viewmodel.TradeViewModel
 
 @Composable
 fun TradeScreen(
-    onInfoRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null,
     onBackRequest: (() -> Unit)? = null,
     tradeService: TradeService,
@@ -53,7 +52,6 @@ fun TradeScreen(
     Scaffold(
         topBar = {
             TopBar(
-                onInfoRequest = onInfoRequest,
                 onProfileRequest = onProfileRequest,
                 onBackRequest = onBackRequest
             )

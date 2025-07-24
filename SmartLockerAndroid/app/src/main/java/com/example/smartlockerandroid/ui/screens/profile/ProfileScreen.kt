@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.R
 import com.example.smartlockerandroid.TokenProvider
+import com.example.smartlockerandroid.data.model.friends.input.CreateFriendRequest
 import com.example.smartlockerandroid.data.model.friends.input.UpdateFriendRequest
+import com.example.smartlockerandroid.data.model.user.input.LoginRequest
 import com.example.smartlockerandroid.data.model.user.output.UserDTO
 import com.example.smartlockerandroid.data.service.FriendsService
 import com.example.smartlockerandroid.data.service.UserService
@@ -56,7 +58,6 @@ import com.example.smartlockerandroid.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
-    onInfoRequest: (() -> Unit)? = null,
     onBackRequest: (() -> Unit)? = null,
     onSettingsClick: ((UserDTO) -> Unit) = {},
     onLogoutClick: (() -> Unit) = {},
@@ -85,7 +86,6 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopBar(
-                onInfoRequest = onInfoRequest,
                 onBackRequest = onBackRequest
             )
         }
@@ -241,7 +241,9 @@ fun ProfileScreen(
                     }
                     TextButton(
                         onClick ={
+
                             TokenProvider.clearToken(context)
+                            profileViewModel.onLogout()
                             onLogoutClick()
                         } ) {
                         Text(text = "log out", color = Color.Red)
@@ -252,8 +254,7 @@ fun ProfileScreen(
         SearchFriendDialog(
             show = showSearch.value,
             onDismiss = { showSearch.value = false },
-            onSendRequest = { user -> profileViewModel.sendFriendRequest(user)
-            },
+            onSendRequest = { user -> profileViewModel.sendFriendRequest(CreateFriendRequest(user.id)) },
             viewModel = profileViewModel
         )
 

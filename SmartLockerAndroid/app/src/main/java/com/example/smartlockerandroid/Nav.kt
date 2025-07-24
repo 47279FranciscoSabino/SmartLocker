@@ -19,13 +19,9 @@ import com.example.smartlockerandroid.ui.screens.profile.SettingsScreen
 fun Nav(
     navController: NavHostController
 ) {
-    val context = LocalContext.current
-    val activity = context as? Activity
-
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomePageScreen(
-                onInfoRequest = { activity?.finish() },
                 onClickLogIn = { navController.navigate("main") },
                 userService = RetrofitInstance.userService
             )
@@ -33,17 +29,18 @@ fun Nav(
 
         composable("main"){
             MainScreen(
-                onInfoRequest = { activity?.finish() },
                 onProfileRequest = { navController.navigate("profile") },
                 onHistoryRequest = { navController.navigate("history") },
                 onTradeInfoRequest = { tradeId -> navController.navigate("tradeInfo/$tradeId") },
-                onNewRequest = { navController.navigate("scan_qr") }
+                onNewRequest = { navController.navigate("scan_qr") },
+                moduleService = RetrofitInstance.moduleService,
+                tradeService = RetrofitInstance.tradeService,
+                historyService = RetrofitInstance.historyService
             )
         }
 
         composable("history"){
             HistoryScreen(
-                onInfoRequest = { activity?.finish() },
                 onProfileRequest = { navController.navigate("profile") },
                 onBackRequest = { navController.popBackStack() },
                 onClickRequest = { tradeId -> navController.navigate("tradeInfo/$tradeId") },
@@ -54,7 +51,6 @@ fun Nav(
         composable("tradeInfo/{tradeId}") {
             val tradeId = it.arguments?.getString("tradeId")?.toIntOrNull()
             TradeScreen(
-                onInfoRequest = { activity?.finish() },
                 onProfileRequest = { navController.navigate("profile") },
                 onBackRequest = { navController.popBackStack() },
                 tradeService = RetrofitInstance.tradeService,
@@ -74,7 +70,6 @@ fun Nav(
 
         composable("profile") {
             ProfileScreen(
-                onInfoRequest = { activity?.finish() },
                 onBackRequest = { navController.popBackStack() },
                 onSettingsClick = { navController.navigate("settings") },
                 onLogoutClick = { navController.navigate("home") },
@@ -88,10 +83,6 @@ fun Nav(
                 onBackRequest = { navController.popBackStack() },
                 userService = RetrofitInstance.userService
             )
-        }
-
-        composable("info") {
-
         }
     }
 }

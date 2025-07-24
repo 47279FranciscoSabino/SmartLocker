@@ -1,12 +1,10 @@
 package project.smartlocker.services
 
-import TradeInfoDTO
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.trade.*
-import project.smartlocker.http.models.trade.input.CreateTradeRequest
 import project.smartlocker.http.models.trade.input.UpdateTradeRequest
 import project.smartlocker.http.models.trade.output.TradeDTO
+import project.smartlocker.http.models.trade.output.TradeInfoDTO
 import project.smartlocker.repository.LockerRepository
 import project.smartlocker.repository.TradeRepository
 
@@ -69,26 +67,27 @@ class TradeService(
             ?: throw Exception("No pending trade for locker $lockerId")
     }
 
-    fun newTrade(user: Int, input: CreateTradeRequest) {
-        if (lockerRepository.getLockerById(input.lockerId)== null) {
+    fun newTrade(user: Int, receiverId:Int, lockerId: Int) {
+        if (lockerRepository.getLockerById(lockerId)== null) {
             throw Exception("Locker not found")
         }
-        tradeRepository.createTrade(user, input.receiverId, input.lockerId)
+        tradeRepository.createTrade(user, receiverId, lockerId)
+        lockerRepository.updateLockerInfo(lockerId, "IN_USE")
     }
 
-    fun editTrade(user: Int, id: Int, input: UpdateTradeRequest) {
+    fun editTrade(user: Int, id: Int, read: Boolean?, status: String?) {
         val trade = tradeRepository.getTradeById(id) ?: throw Exception("Trade not found")
 
         if (user != trade.senderId && user != trade.receiverId) {
             throw Exception("Only the sender or receiver can edit the trade")
         }
 
-        val read = input.read ?: trade.read
-        val status = input.status ?: trade.status
-        if(!read){   //package withdraw
+        val newRead = read ?: trade.read
+        val newStatus = status ?: trade.status
+
+        if(!newRead){   //package withdraw
             lockerRepository.updateLockerInfo(trade.lockerId, "AVAILABLE")
         }
-        tradeRepository.updateTradeStatus(id, read, status)
+        tradeRepository.updateTradeStatus(id, newRead, newStatus)
     }
-
 }

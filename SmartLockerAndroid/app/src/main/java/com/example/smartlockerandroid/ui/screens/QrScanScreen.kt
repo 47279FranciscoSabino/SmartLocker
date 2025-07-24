@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.smartlockerandroid.TokenProvider
 import com.example.smartlockerandroid.data.service.FriendsService
-import com.example.smartlockerandroid.data.service.LockerService
 import com.example.smartlockerandroid.data.service.ScanService
 import com.example.smartlockerandroid.data.service.TradeService
 import com.example.smartlockerandroid.ui.components.CreateTradeFriend

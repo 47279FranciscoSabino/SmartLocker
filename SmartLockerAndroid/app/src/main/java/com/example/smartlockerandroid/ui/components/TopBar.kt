@@ -21,7 +21,6 @@ import com.example.smartlockerandroid.ui.theme.SmartLockerAndroidTheme
 fun TopBar(
     text:String? = null,
     onBackRequest: (() -> Unit)? = null,
-    onInfoRequest: (() -> Unit)? = null,
     onHomeRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null
 ) {
@@ -46,11 +45,6 @@ fun TopBar(
                 }
             },
             actions = {
-                if (onInfoRequest != null) {
-                    IconButton(onClick = onInfoRequest) {
-                        Icon(Icons.Default.Info, tint = Color.Gray, contentDescription = null)
-                    }
-                }
                 if (onHomeRequest != null) {
                     IconButton(onClick = onHomeRequest) {
                         Icon(Icons.Default.Home, tint = Color.Gray, contentDescription = null)
@@ -68,23 +62,8 @@ fun TopBar(
 
 @Preview
 @Composable
-private fun TopBarPreviewInfo() {
-    TopBar(onInfoRequest = { })
-}
-
-@Preview
-@Composable
 private fun TopBarPreviewBack() {
     TopBar(text= "pagina", onBackRequest = { })
-}
-
-@Preview
-@Composable
-private fun TopBarPreviewBackAndInfo() {
-    TopBar(
-        onBackRequest = { },
-        onInfoRequest = { }
-    )
 }
 
 @Preview
@@ -97,9 +76,8 @@ private fun TopBarPreviewBackAndLogin() {
 
 @Preview
 @Composable
-private fun TopBarPreviewProfileAndProfile() {
+private fun TopBarPreviewProfile() {
     TopBar(
-        onInfoRequest = { },
         onProfileRequest = { }
     )
 }
@@ -110,7 +88,6 @@ private fun TopBarPreviewAll() {
     TopBar(
         onBackRequest = { },
         onHomeRequest = { },
-        onInfoRequest = { },
         onProfileRequest = { }
     )
 }

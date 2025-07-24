@@ -38,63 +38,6 @@ interface FriendsRepository {
         @Bind("user") user: Int,
         @Bind("friend") friend: Int
     ): AdminFriendDTO?
-    /*
-
-    //global
-    @SqlQuery(
-        """
-        SELECT
-        u.*,
-        f.friend_date,
-        (CURRENT_DATE - f.friend_date) as days,
-        fs.friends_status
-        FROM friends f
-        INNER JOIN friends_status fs ON fs.friend = f.friend AND fs.user_locker = f.user_locker
-        INNER JOIN user_locker u
-        ON (f.user_locker = :user AND u.user_id = f.friend)
-        OR (f.friend = :user AND u.user_id = f.friend)
-        WHERE f.user_locker = :user OR f.friend = :user
-        """
-    )
-    fun getAllFriendsInfo(
-        @Bind("user") user: Int
-    ): List<FriendDTO>
-
-    @SqlUpdate(
-        """
-        INSERT INTO friends (user_locker, friend)
-        VALUES (:user, :friend)
-        """
-    )
-    fun createFriend(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int
-    )
-
-    @SqlUpdate(
-        """
-        UPDATE friends_status
-        SET friends_status = :status
-        WHERE user_locker = :user AND friend = :friend
-        """
-    )
-    fun updateFriend(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int,
-        @Bind("status") status: String
-    )
-
-    @SqlUpdate(
-        """
-        DELETE FROM friends WHERE user_locker = :user AND friend = :friend
-        """
-    )
-    fun deleteFriends(
-        @Bind("user") user: Int,
-        @Bind("friend") friend: Int
-    )
-
-     */
 
 // ------------------------------------------------------------------------------------
     //getFriendsList

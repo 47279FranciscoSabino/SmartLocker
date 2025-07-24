@@ -38,59 +38,53 @@ fun HomePageScreen(
 ) {
     val showAuthDialog = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopBar(onInfoRequest = onInfoRequest)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text(
+            text = "Smart Locker",
+            fontStyle = FontStyle.Italic,
+            fontSize = 55.sp,
+            fontWeight = FontWeight.Bold,
+            color = MyBlue2
+        )
+
+        Spacer(modifier = Modifier.height(80.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.smartlocker_icon),
+            contentDescription = "Smart Locker Logo",
+            modifier = Modifier.size(180.dp)
+        )
+
+        Spacer(modifier = Modifier.height(80.dp))
+
+        LogInButton {
+            showAuthDialog.value = true
         }
-    ) { paddingValues ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Text(
-                text = "Smart Locker",
-                fontStyle = FontStyle.Italic,
-                fontSize = 55.sp,
-                fontWeight = FontWeight.Bold,
-                color = MyBlue2
-            )
 
-            Spacer(modifier = Modifier.height(80.dp))
-
-            Image(
-                painter = painterResource(id = R.drawable.smartlocker_icon),
-                contentDescription = "Smart Locker Logo",
-                modifier = Modifier.size(180.dp)
-            )
-
-            Spacer(modifier = Modifier.height(80.dp))
-
-            LogInButton {
-                showAuthDialog.value = true
-            }
-
-            // Login/sign up
-            if (showAuthDialog.value) {
-                Dialog(onDismissRequest = { showAuthDialog.value = false }) {
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.background,
-                        tonalElevation = 8.dp
-                    ) {
-                        Box(modifier = Modifier.padding(16.dp)) {
-                            AuthScreen(
-                                onDismiss = { showAuthDialog.value = false },
-                                onClick = onClickLogIn,
-                                userService = userService
-                            )
-                        }
+        // Login/sign up
+        if (showAuthDialog.value) {
+            Dialog(onDismissRequest = { showAuthDialog.value = false }) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.background,
+                    tonalElevation = 8.dp
+                ) {
+                    Box(modifier = Modifier.padding(16.dp)) {
+                        AuthScreen(
+                            onDismiss = { showAuthDialog.value = false },
+                            onClick = onClickLogIn,
+                            userService = userService
+                        )
                     }
                 }
             }
         }
     }
 }
+
 

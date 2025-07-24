@@ -11,6 +11,7 @@ class QrScanDTOMapper(): RowMapper<QrScanDTO> {
     override fun map(rs: ResultSet, ctx: StatementContext?): QrScanDTO {
         return QrScanDTO(
             rs.getString("hash"),
+            rs.getInt("locker"),
             rs.getBytes("hash_qr")
         )
     }

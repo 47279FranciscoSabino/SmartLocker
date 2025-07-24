@@ -3,8 +3,6 @@ package project.smartlocker.services
 import org.apache.coyote.BadRequestException
 import org.springframework.stereotype.Service
 import project.smartlocker.domain.module.ModuleStatus
-import project.smartlocker.http.models.module.input.CreateModuleRequest
-import project.smartlocker.http.models.module.input.UpdateModuleRequest
 import project.smartlocker.http.models.module.output.AdminModuleDTO
 import project.smartlocker.http.models.module.output.ModuleDTO
 import project.smartlocker.repository.ModuleRepository
@@ -27,25 +25,25 @@ class ModuleService(
         return moduleRepository.getModuleById(id)
     }
 
-    fun createModule(new: CreateModuleRequest) {
-        val location = "POINT(${new.longitude} ${new.latitude})"
-        moduleRepository.createModule(location, new.locName, new.maxN)
+    fun createModule(longitude: Double, latitude: Double, locName: String, maxN: Int) {
+        val location = "POINT(${longitude} ${latitude})"
+        moduleRepository.createModule(location, locName, maxN)
     }
 
-    fun updateModule(id: Int, input: UpdateModuleRequest) {
+    fun updateModule(id: Int, latitude: Double? = null, longitude: Double? = null, locName: String? = null, maxN: Int? = null, status: String? = null) {
         val module = moduleRepository.getModuleById(id)?: throw Exception("Module not found")
 
-        val location = if( input.longitude == null || input.latitude == null){
+        val location = if( longitude == null || latitude == null){
             "POINT(${module.location.longitude} ${module.location.latitude})"
         }else{
-            "POINT(${input.longitude} ${input.latitude})"
+            "POINT(${longitude} ${latitude})"
         }
-        val locName = input.locName ?: module.locName
-        val maxN = input.maxN ?: module.maxN
-        val status = input.status ?: module.status
+        val newLocName = locName ?: module.locName
+        val newMaxN = maxN ?: module.maxN
+        val newStatus = status ?: module.status
 
-        val moduleId = moduleRepository.updateModule(id, location, locName, maxN)
-        moduleRepository.updateModuleStatus(moduleId, status)
+        val moduleId = moduleRepository.updateModule(id, location, newLocName, newMaxN)
+        moduleRepository.updateModuleStatus(moduleId, newStatus)
     }
 
     fun deleteModule(id: Int){

@@ -21,7 +21,8 @@ class LockerController(
 ) {
     // admin
     @GetMapping(Uris.Locker.GET_ALL_LOCKERS)
-    fun getAllLockers(request: HttpServletRequest
+    fun getAllLockers(
+        request: HttpServletRequest
     ): ResponseEntity<Any> {
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -31,7 +32,8 @@ class LockerController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
         val lockers = lockerService.getAllLockers()
-        return ResponseEntity.ok(lockers)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(lockers)
     }
 
     @GetMapping(Uris.Locker.GET_ALL_LOCKERS_STATUS)
@@ -52,8 +54,9 @@ class LockerController(
         if (user.role != RoleEnum.ADMIN.toString()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
-        lockerService.createLocker(input)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        lockerService.createLocker(input.module, input.hash, input.active)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Locker created successfully.")
     }
 
     @PutMapping(Uris.Locker.UPDATE_LOCKER)
@@ -69,8 +72,9 @@ class LockerController(
         if (user.role != RoleEnum.ADMIN.toString()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
-        lockerService.updateLocker(id, input)
-        return ResponseEntity.ok().build()
+        lockerService.updateLocker(id, input.module, input.hash, input.active, input.status)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Locker updated.")
     }
 
     @DeleteMapping(Uris.Locker.DELETE_LOCKER)
@@ -86,7 +90,8 @@ class LockerController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
         lockerService.deleteLocker(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Locker deleted.")
     }
 
     //
@@ -106,14 +111,4 @@ class LockerController(
         }?: ResponseEntity.notFound().build()
 
     }
-
-    // global
-    /*
-    @GetMapping(Uris.Locker.QR_VALIDATION)
-    fun validateQR(@PathVariable id: Int): ResponseEntity<QrValidationResultDTO> {
-        val result = lockerService.validateQrCode(id)
-        return ResponseEntity.ok(result)
-    }
-
-     */
 }

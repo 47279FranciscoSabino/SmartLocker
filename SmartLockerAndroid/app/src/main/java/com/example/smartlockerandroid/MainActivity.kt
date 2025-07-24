@@ -38,21 +38,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-/*
-    fun saveToken(token: String) {
-        val success = prefs.edit().putString("auth_token", token).commit()
-        Log.d("MainActivity", "Token saved: $success")
-    }
-
-    fun getToken(): String? {
-        return prefs.getString("auth_token", null)
-    }
-
-    fun clearToken() {
-        prefs.edit { remove("auth_token") }
-    }
-
- */
 }
 
 object TokenProvider {

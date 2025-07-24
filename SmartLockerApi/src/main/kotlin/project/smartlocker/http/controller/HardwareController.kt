@@ -1,7 +1,5 @@
 package project.smartlocker.http.controller
 
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import project.smartlocker.http.utlis.Uris
@@ -26,12 +24,7 @@ class HardwareController() {
             .bodyToMono(String::class.java)
             .block() // block for simplicity here
 
-
-
-        //val body = Hardware(true, false, "open")
-        //hardwareService.newTrade(body)
         return response
-        //return restTemplate.postForEntity(url, body, String::class.java)
     }
 
     fun getStatus(ip:String): String?{
@@ -41,7 +34,7 @@ class HardwareController() {
             .uri(url)
             .retrieve()
             .bodyToMono(String::class.java)
-            .block() // block for simplicity here
+            .block()
 
         return response
     }

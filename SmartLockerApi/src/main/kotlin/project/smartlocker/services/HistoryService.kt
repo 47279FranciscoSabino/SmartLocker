@@ -1,8 +1,8 @@
 package project.smartlocker.services
 
-import TradeInfoDTO
 import org.springframework.stereotype.Service
 import project.smartlocker.http.models.trade.output.TradeDTO
+import project.smartlocker.http.models.trade.output.TradeInfoDTO
 import project.smartlocker.repository.HistoryRepository
 import project.smartlocker.repository.TradeRepository
 
@@ -14,19 +14,6 @@ class HistoryService(
     // admin
     fun getLockerHistory(lockerId:Int): List<TradeDTO> {
         return tradeRepository.getTradesByLocker(lockerId)
-    }
-
-    // global
-    fun getByReceiver(receiverId:Int): List<TradeDTO> {
-        return tradeRepository.getTradesByReceiver(receiverId)
-    }
-
-    fun getBySender(senderId:Int): List<TradeDTO> {
-        return tradeRepository.getTradesBySender(senderId)
-    }
-
-    fun getUserHistory(userId:Int): List<TradeDTO> {
-        return tradeRepository.getUserTrades(userId)
     }
 
     //--------------------------------------------------------------------------------------------------------

@@ -32,7 +32,8 @@ class ModuleController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
         val modules = moduleService.getAllModules()
-        return ResponseEntity.ok(modules)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(modules)
     }
 
     @GetMapping(Uris.Module.GET_ALL_MODULES_STATUS)
@@ -53,8 +54,9 @@ class ModuleController(
         if (user.role != RoleEnum.ADMIN.toString()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
-        moduleService.createModule(input)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        moduleService.createModule(input.latitude, input.longitude, input.locName, input.maxN)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("New module created.")
     }
 
     @PutMapping(Uris.Module.UPDATE_MODULE)
@@ -70,8 +72,9 @@ class ModuleController(
         if (user.role != RoleEnum.ADMIN.toString()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
-        moduleService.updateModule(id, input)
-        return ResponseEntity.ok().build()
+        moduleService.updateModule(id, input.latitude, input.longitude, input.locName, input.maxN, input.status)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Module updated.")
     }
 
     @DeleteMapping(Uris.Module.DELETE_MODULE)
@@ -87,7 +90,8 @@ class ModuleController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
         moduleService.deleteModule(id)
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body("Module deleted.")
 
     }
     @GetMapping(Uris.Module.GET_MODULE_BY_ID)
@@ -103,19 +107,9 @@ class ModuleController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry, you don’t have permission for this page.")
         }
         val module = moduleService.getModuleById(id)
-        return ResponseEntity.ok(module)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(module)
     }
-
-
-/*
-    // global
-    @GetMapping(Uris.Module.GET_MODULE_GEO)
-    fun getModulesByRadius(@PathVariable latitude: Double, @PathVariable longitude: Double, @RequestParam radius: Double): ResponseEntity<List<ModuleDTO>> {
-        val modules = moduleService.getModulesByRadius(latitude, longitude, radius)
-        return ResponseEntity.ok(modules)
-    }
-
- */
 
     // app
     @GetMapping(Uris.Module.GET_MAP)
@@ -123,9 +117,10 @@ class ModuleController(
         @RequestParam latitude: Double,
         @RequestParam longitude: Double,
         @RequestParam radius: Double
-    ): ResponseEntity<List<ModuleDTO>> {
+    ): ResponseEntity<Any> {
         val modules = moduleService.getMap(latitude, longitude, radius)
-        return ResponseEntity.ok(modules)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(modules)
     }
 
 }
