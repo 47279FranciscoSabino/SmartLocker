@@ -78,7 +78,7 @@ interface UserRepository {
         """
         SELECT * FROM user_locker u
         INNER JOIN user_status us ON user_locker = u.user_id
-        WHERE user_name = :username
+        WHERE user_name LIKE '%' || :username || '%'
         """
     )
     fun getUserByUsername(

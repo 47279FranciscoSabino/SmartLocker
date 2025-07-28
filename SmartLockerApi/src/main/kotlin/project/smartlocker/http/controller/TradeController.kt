@@ -10,13 +10,15 @@ import project.smartlocker.http.models.trade.input.CreateTradeRequest
 import project.smartlocker.http.models.trade.input.UpdateTradeRequest
 import project.smartlocker.http.models.user.output.UserDTO
 import project.smartlocker.http.utlis.Uris
+import project.smartlocker.services.LockerService
 import project.smartlocker.services.TradeService
 
 @RestController
 @RequestMapping(Uris.API)
 class TradeController(
     private val hardwareController:HardwareController,
-    private val tradeService: TradeService
+    private val tradeService: TradeService,
+    private val lockerService: LockerService,
 ){
     // admin
     @GetMapping(Uris.Trade.GET_ALL_TRADE)
@@ -97,7 +99,10 @@ class TradeController(
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
-        //hardwareController.newTrade("192.168.137.76", true, false, "open")
+        val locker = lockerService.getLockerById(input.lockerId)
+        if (locker != null) {
+            hardwareController.newTrade(locker.ip, true, false, "open")
+        }
 
         tradeService.newTrade(user.id, input.receiverId, input.lockerId)
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -114,7 +119,7 @@ class TradeController(
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
-        //hardwareController.newTrade("192.168.137.76", false, true, "open")
+        hardwareController.newTrade("192.168.137.76", false, true, "open")
 
         tradeService.editTrade(user.id, tradeId, input.read, input.status)
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -130,14 +135,23 @@ class TradeController(
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
-        //hardwareController.newTrade("192.168.137.76", false, true, "open")
-
         val trade = tradeService.getLockerTrade(lockerId)
-        var status = "COMPLETED"
-        if (user.id == trade.senderId) status = "CANCELLED"
-        tradeService.editTrade(user.id, trade.id, false, status)
+        if (user.id == trade.senderId||user.id == trade.receiverId){
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body("Trade was withdrawn successfully.")
+            val locker = lockerService.getLockerById(lockerId)
+            if (locker != null) {
+                hardwareController.newTrade(locker.ip, false, true, "open")
+            }
+
+            var status = "COMPLETED"
+            if (user.id == trade.senderId) status = "CANCELLED"
+            tradeService.editTrade(user.id, trade.id, false, status)
+
+            return ResponseEntity.status(HttpStatus.OK)
+                .body("Trade was withdrawn successfully.")
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED)
+                .body("Trade was not withdrawn.")
+        }
     }
 }
