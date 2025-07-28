@@ -83,15 +83,16 @@ fun NewTradeScreen(
         factory = viewModelInit { NewTradeViewModel(moduleService) }
     )
 
+    var modules = newTradeViewModel.modules
+    val loading = newTradeViewModel.isLoading
+    val error = newTradeViewModel.errorMessage
+
     LaunchedEffect(location.value) {
         location.value?.let {
             newTradeViewModel.updateLocation(it)
         }
+        modules = newTradeViewModel.modules
     }
-
-    val modules = newTradeViewModel.modules
-    val loading = newTradeViewModel.isLoading
-    val error = newTradeViewModel.errorMessage
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

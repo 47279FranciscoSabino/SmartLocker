@@ -28,8 +28,8 @@ class NewTradeViewModel(
     fun updateLocation(location: GeoPoint) {
         if (location != currentLocation) {
             currentLocation = location
-            loadModules()
         }
+        loadModules()
     }
 
     private fun loadModules() {

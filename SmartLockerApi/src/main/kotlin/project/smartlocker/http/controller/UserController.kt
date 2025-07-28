@@ -153,9 +153,9 @@ class UserController(
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
-        val profile = userService.getUserById(user.id)
+        //val profile = userService.getUserById(user.id)
         return ResponseEntity.status(HttpStatus.OK)
-            .body(profile)
+            .body(user)
     }
 
     @PutMapping(Uris.Users.EDIT_USER)
