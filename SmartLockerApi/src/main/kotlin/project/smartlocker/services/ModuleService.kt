@@ -51,13 +51,6 @@ class ModuleService(
         moduleRepository.deleteModule(id)
     }
 
-/*
-    // global
-    fun getModulesByRadius(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{
-        val modules = moduleRepository.getModulesByRadius(longitude, latitude, radius)
-        return modules
-    }
- */
 
     // app
     fun getMap(latitude: Double, longitude: Double,  radius: Double): List<ModuleDTO>{

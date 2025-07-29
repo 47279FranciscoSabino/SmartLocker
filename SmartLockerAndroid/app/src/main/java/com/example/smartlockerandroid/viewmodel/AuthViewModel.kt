@@ -25,6 +25,22 @@ class AuthViewModel(
     var isSuccess by mutableStateOf(false)
         private set
 
+    fun onToken(token: String) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            try {
+                val bearerToken = "Bearer ${token}"
+                userService.getProfile(bearerToken)
+                isSuccess = true
+            } catch (e: Exception) {
+                errorMessage = "Login failed: ${e.localizedMessage}"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
     fun onLogin(input: LoginRequest) {
         viewModelScope.launch {
             isLoading = true

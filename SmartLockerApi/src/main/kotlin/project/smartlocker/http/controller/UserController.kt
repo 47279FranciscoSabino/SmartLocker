@@ -152,8 +152,6 @@ class UserController(
         val user = request.getAttribute("authenticatedUser") as? UserDTO
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
-
-        //val profile = userService.getUserById(user.id)
         return ResponseEntity.status(HttpStatus.OK)
             .body(user)
     }

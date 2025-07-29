@@ -153,7 +153,22 @@ fun QrScanScreen(
                     }
 
                     error != null -> {
-                        Text("Error: $error")
+                        AlertDialog(
+                            onDismissRequest = { },
+                            title = {
+                                Text( "Error: $error")
+                            },
+                            text = {
+                                Text(
+                                    viewModel.errorMessage!!
+                                )
+                            },
+                            confirmButton = {
+                                TextButton(onClick = {onBackRequest()}) {
+                                    Text(stringResource(R.string.confirm))
+                                }
+                            },
+                        )
                     }
 
                     locker != null -> {
@@ -201,7 +216,10 @@ fun QrScanScreen(
                         showConfirmDialog.value = false
                         if (isPickup.value) {
                             viewModel?.confirmPickup(locker!!)
-                            onBackRequest()
+                            if(viewModel?.errorMessage == null){
+                                onBackRequest()
+                            }
+
                         } else {
                             viewModel?.loadFriends()
                             showFriendsList.value = true
@@ -219,5 +237,5 @@ fun QrScanScreen(
                 }
             )
         }
-    }
+     }
 }

@@ -18,7 +18,7 @@
 
     <!-- Main Screen -->
     <string name="new_trade">New Trade</string>
-    <string name="new_button">New</string>
+    <string name="new_button">Scan QrCode</string>
 
     <string name="start_trade_msg">Locker available. Start new trade?</string>
     <string name="start_trade">Start trade</string>

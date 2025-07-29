@@ -96,6 +96,7 @@ class UserService(
     }
 
     fun createUser(username: String, email:String, password:String) {
+        if(password.length < 8) throw Exception("Password must be more than 8 characters")
         val hashedPassword = passwordEncoder.encode(password)
         val user = userRepository.getUserByEmail(email)
         if (user != null) {

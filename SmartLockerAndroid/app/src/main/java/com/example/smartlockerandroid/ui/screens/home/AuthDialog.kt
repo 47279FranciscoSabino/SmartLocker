@@ -57,22 +57,28 @@ fun AuthScreen(
     val isLoading = viewModel.isLoading
     val error = viewModel.errorMessage
     val token = viewModel.authToken
+    val savedToken = TokenProvider.getToken(context)
 
-    LaunchedEffect(Unit) {
-        val savedToken = TokenProvider.getToken(context)
+    LaunchedEffect(Unit, savedToken) {
         Log.d("AuthScreen", "Saved token: $savedToken")
         if (!savedToken.isNullOrBlank()) {
-            Log.d("AuthScreen", "Token found, navigating...")
-            onClick()
+            viewModel.onToken(savedToken)
+            //Log.d("AuthScreen", "Token found, navigating...")
+            //onClick()
         } else {
             Log.d("AuthScreen", "No token found")
         }
     }
 
-    LaunchedEffect(viewModel.isSuccess, token) {
+    LaunchedEffect(viewModel.isSuccess, token, savedToken) {
         if (viewModel.isSuccess && token != null) {
             Log.d("AuthScreen", "Saving token: $token")
             TokenProvider.saveToken(context, token)
+            onClick()
+            viewModel.resetStatus()
+        }
+        else if (viewModel.isSuccess && savedToken != null) {
+            Log.d("AuthScreen", "Saving token: $token")
             onClick()
             viewModel.resetStatus()
         }
