@@ -119,8 +119,6 @@ class TradeController(
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body("Unauthorized: Please log in to access this resource.")
 
-        hardwareController.newTrade("192.168.137.76", false, true, "open")
-
         tradeService.editTrade(user.id, tradeId, input.read, input.status)
         return ResponseEntity.status(HttpStatus.CREATED)
             .body("Trade status updated.")

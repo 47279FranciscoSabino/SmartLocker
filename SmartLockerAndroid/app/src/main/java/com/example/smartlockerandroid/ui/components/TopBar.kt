@@ -24,7 +24,7 @@ fun TopBar(
     onHomeRequest: (() -> Unit)? = null,
     onProfileRequest: (() -> Unit)? = null
 ) {
-    SmartLockerAndroidTheme(){
+    SmartLockerAndroidTheme(darkTheme = false){
         TopAppBar(
             title =  {
                 if (text != null){

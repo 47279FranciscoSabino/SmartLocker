@@ -31,7 +31,7 @@ interface FriendsRepository {
         fs.friends_status
         FROM friends f
         INNER JOIN friends_status fs ON fs.friend = f.friend AND fs.user_locker = f.user_locker
-        WHERE f.friend = :friend AND f.user_locker = :user
+        WHERE (f.friend = :friend AND f.user_locker = :user) OR (f.friend = :user AND f.user_locker = :friend) 
         """
     )
     fun getFriend(
@@ -85,7 +85,7 @@ interface FriendsRepository {
         """
         UPDATE friends_status 
         SET friends_status = :status
-        WHERE user_locker = :user AND friend = :friend
+        WHERE (friend = :friend AND user_locker = :user) OR (friend = :user AND user_locker = :friend) 
         """
     )
     fun editFriend(
@@ -97,7 +97,7 @@ interface FriendsRepository {
     //removeFriend
     @SqlUpdate(
         """
-        DELETE FROM friends WHERE user_locker = :user AND friend = :friend  
+        DELETE FROM friends WHERE (friend = :friend AND user_locker = :user) OR (friend = :user AND user_locker = :friend) 
         """
     )
     fun removeFriend(

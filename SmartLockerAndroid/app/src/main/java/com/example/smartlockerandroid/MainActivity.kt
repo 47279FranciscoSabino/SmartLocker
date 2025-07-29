@@ -32,7 +32,9 @@ class MainActivity : ComponentActivity() {
         prefs = getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
         setContent {
-            SmartLockerAndroidTheme {
+            SmartLockerAndroidTheme(
+                darkTheme = false
+            ) {
                 val navController = rememberNavController()
                 Nav(navController = navController)
             }
